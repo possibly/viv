@@ -29,12 +29,14 @@ export function CausalTree({
     resolveLabel,
     maxDepth = 4
 }: CausalTreeProps): React.ReactElement {
-    const lines = renderTree(actionID, actions, direction, resolveLabel, maxDepth);
-    if (lines.length === 0) {
+    const root = actions[actionID];
+    const directEdges = root ? (direction === "causes" ? root.causes : root.caused) : [];
+    if (directEdges.length === 0) {
         return (
             <Text dimColor>{direction === "causes" ? "(no causes)" : "(no effects)"}</Text>
         );
     }
+    const lines = renderTree(actionID, actions, direction, resolveLabel, maxDepth);
     return (
         <Box flexDirection="column">
             {lines.map((line, i) => (
