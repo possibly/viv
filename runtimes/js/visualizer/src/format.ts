@@ -94,6 +94,17 @@ export function makeLabelResolver(
 }
 
 /**
+ * Pads-or-truncates a string to exactly `width` columns so rows stay aligned
+ * in list views even when an underlying name is longer than expected. A
+ * truncated string ends in "…" as a hint that more was cut off.
+ */
+export function fit(s: string, width: number): string {
+    if (s.length === width) return s;
+    if (s.length < width) return s.padEnd(width);
+    return s.slice(0, Math.max(1, width - 1)) + "…";
+}
+
+/**
  * Renders a timestamp as "T=<minutes>". Keeps it short enough to fit in
  * a column. Timestamps are diegetic minutes since the simulation's epoch.
  */

@@ -144,17 +144,19 @@ function describeAction(q: QueuedAction | QueuedActionSelector): string {
 function describePlan(q: QueuedPlan | QueuedPlanSelector, resolveLabel: LabelResolver): string {
     const kind = q.type === QueuedConstructDiscriminator.Plan ? "plan" : "plan-selector";
     const roles = Object.entries(q.precastBindings);
-    const bindings =
-        roles.length === 0
-            ? ""
-            : `  { ${roles
-                  .map(([role, value]) => {
-                      const vals = Array.isArray(value) ? value : [value];
-                      const labels = vals
-                          .map((v) => (typeof v === "string" ? resolveLabel(v) : String(v)))
-                          .join(", ");
-                      return `${role}: ${labels}`;
-                  })
-                  .join("; ")} }`;
-    return `[${kind}] ${q.constructName}${bindings}`;
+    if (roles.length === 0) return `[${kind}] ${q.constructName}`;
+    const inner = roles
+        .map(([role, value]) => {
+            const vals = Array.isArray(value) ? value : [value];
+            const labels = vals
+                .map((v) => (typeof v === "string" ? resolveLabel(v) : String(v)))
+                .join(", ");
+            return `${role}: ${labels}`;
+        })
+        .join("; ");
+    // Cap bindings so long role labels don't wrap the closing brace onto a
+    // new line in narrow terminals. The full bindings are still viewable
+    // elsewhere (e.g. the Plans pane when the plan is launched).
+    const capped = inner.length > 50 ? inner.slice(0, 47) + "..." : inner;
+    return `[${kind}] ${q.constructName}  { ${capped} }`;
 }

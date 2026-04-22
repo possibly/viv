@@ -3,7 +3,7 @@ import React from "react";
 
 import type { PlanState, UID } from "@siftystudio/viv-runtime";
 
-import { formatTimestamp, formatValue, type LabelResolver } from "../format.js";
+import { fit, formatTimestamp, formatValue, type LabelResolver } from "../format.js";
 import type { VivSnapshot } from "../snapshot.js";
 import { SelectableList, type SelectableListItem } from "../widgets/list.js";
 
@@ -39,7 +39,7 @@ export function PlansPane({
 
     const items: SelectableListItem[] = filtered.map(([id, plan]) => ({
         key: id,
-        label: `${plan.planName.padEnd(18)} ${plan.currentPhase.padEnd(14)} pc=${plan.programCounter}`
+        label: `${fit(plan.planName, 18)} ${fit(plan.currentPhase, 14)} pc=${plan.programCounter}`
     }));
 
     const selected =

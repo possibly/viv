@@ -4,6 +4,7 @@ import React from "react";
 import type { CharacterView, UID } from "@siftystudio/viv-runtime";
 
 import {
+    fit,
     forgottenCount,
     formatSalience,
     formatTimestamp,
@@ -126,12 +127,12 @@ function CharacterDetail({
                     top.map(([actionID, mem]) => {
                         const action = snapshot.entities[actionID];
                         const name = action && "name" in action ? String(action.name) : "?";
+                        const prefix = mem.forgotten ? "✗ " : "  ";
                         return (
                             <Text key={actionID}>
+                                {prefix}
                                 {formatSalience(mem.salience)}{"  "}
-                                {name.padEnd(14)} {actionID.slice(0, 10).padEnd(12)}{" "}
-                                {formatTimestamp(mem.formationTimestamp)}
-                                {mem.forgotten ? <Text color="red"> [forgotten]</Text> : null}
+                                {fit(name, 16)} {formatTimestamp(mem.formationTimestamp)}
                             </Text>
                         );
                     })
