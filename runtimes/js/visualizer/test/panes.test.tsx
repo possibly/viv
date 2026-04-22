@@ -87,6 +87,29 @@ describe("MemoriesPane", () => {
         unmount();
     });
 
+    it("auto-selects the first memory when none is specified", async () => {
+        const snapshot = await loadFixture();
+        const resolveLabel = makeLabelResolver(snapshot.entities, "name");
+        // SelectableList always draws a `>` cursor on row 0, so the detail
+        // side must render that first memory's action instead of the
+        // "Select a memory." placeholder on initial entry.
+        const { lastFrame, unmount } = render(
+            <MemoriesPane
+                snapshot={snapshot}
+                resolveLabel={resolveLabel}
+                characterID="alice"
+                filter=""
+                selectedMemoryID={null}
+                onSelect={() => {}}
+                focused={false}
+            />
+        );
+        const frame = lastFrame() ?? "";
+        expect(frame).not.toContain("Select a memory");
+        expect(frame).toContain("salience:");
+        unmount();
+    });
+
     it("prompts when no character is selected", async () => {
         const snapshot = await loadFixture();
         const resolveLabel = makeLabelResolver(snapshot.entities, "name");

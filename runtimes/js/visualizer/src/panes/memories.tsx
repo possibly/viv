@@ -1,5 +1,5 @@
 import { Box, Text } from "ink";
-import React from "react";
+import React, { useEffect } from "react";
 
 import type { ActionView, CharacterMemory, CharacterView, UID } from "@siftystudio/viv-runtime";
 
@@ -66,12 +66,23 @@ export function MemoriesPane({
         };
     });
 
+    // SelectableList always visually highlights a row; keep the detail pane in
+    // sync by auto-selecting the first visible memory whenever the current
+    // selection is missing or filtered out.
+    const firstVisibleKey: UID | null = items.length > 0 ? items[0]!.key : null;
+    const currentIsVisible =
+        selectedMemoryID !== null && items.some((i) => i.key === selectedMemoryID);
+    useEffect(() => {
+        if (firstVisibleKey !== null && !currentIsVisible) onSelect(firstVisibleKey);
+    }, [firstVisibleKey, currentIsVisible, onSelect]);
+
+    const effectiveID = currentIsVisible ? selectedMemoryID : firstVisibleKey;
     const selectedAction =
-        selectedMemoryID !== null
-            ? (snapshot.entities[selectedMemoryID] as ActionView | undefined)
+        effectiveID !== null
+            ? (snapshot.entities[effectiveID] as ActionView | undefined)
             : undefined;
     const selectedMemory =
-        selectedMemoryID !== null ? character.memories[selectedMemoryID] : undefined;
+        effectiveID !== null ? character.memories[effectiveID] : undefined;
 
     return (
         <Box flexGrow={1} flexDirection="column">
