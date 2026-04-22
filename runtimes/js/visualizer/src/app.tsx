@@ -1,10 +1,11 @@
 import { Box, Text, useApp, useInput } from "ink";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import type { UID } from "@siftystudio/viv-runtime";
 
 import { makeLabelResolver, formatTimestamp } from "./format.js";
 import type { VivSnapshot } from "./snapshot.js";
+import type { SnapshotSource } from "./source.js";
 import { CharactersPane } from "./panes/characters.js";
 import { ChroniclePane } from "./panes/chronicle.js";
 import { MemoriesPane } from "./panes/memories.js";
@@ -20,10 +21,32 @@ const VIEW_ORDER: View[] = ["characters", "memories", "chronicle", "queues", "pl
 export interface AppProps {
     snapshot: VivSnapshot;
     labelField: string | null;
+    /**
+     * Optional live source. When present, the app subscribes to it and
+     * replaces `snapshot` with each update. Used by the CLI to keep the TUI
+     * in sync with a running host over HTTP or IPC.
+     */
+    source?: SnapshotSource | null;
 }
 
-export function App({ snapshot, labelField }: AppProps): React.ReactElement {
+export function App({ snapshot: initialSnapshot, labelField, source = null }: AppProps): React.ReactElement {
     const { exit } = useApp();
+    const [snapshot, setSnapshot] = useState<VivSnapshot>(initialSnapshot);
+    const [liveUpdates, setLiveUpdates] = useState(0);
+
+    useEffect(() => {
+        setSnapshot(initialSnapshot);
+    }, [initialSnapshot]);
+
+    useEffect(() => {
+        if (source === null) return;
+        const unsubscribe = source.subscribe((next) => {
+            setSnapshot(next);
+            setLiveUpdates((n) => n + 1);
+        });
+        return unsubscribe;
+    }, [source]);
+
     const resolveLabel = useMemo(
         () => makeLabelResolver(snapshot.entities, labelField),
         [snapshot.entities, labelField]
@@ -142,7 +165,7 @@ export function App({ snapshot, labelField }: AppProps): React.ReactElement {
                     ]}
                     right={`${formatTimestamp(snapshot.timestamp)}  schema ${
                         snapshot.schemaVersion
-                    }`}
+                    }${source !== null ? `  live (${liveUpdates})` : ""}`}
                 />
             </Box>
         </Box>

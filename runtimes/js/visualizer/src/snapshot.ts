@@ -92,38 +92,47 @@ export async function loadSnapshot(path: string): Promise<VivSnapshot> {
         const cause = error instanceof Error ? error.message : String(error);
         throw new Error(`Snapshot at ${path} is not valid JSON: ${cause}`);
     }
-    return validateSnapshotShape(parsed, path);
+    return validateSnapshotPayload(parsed, `file ${path}`);
 }
 
-function validateSnapshotShape(value: unknown, path: string): VivSnapshot {
+/**
+ * Validates that an arbitrary parsed JSON value looks like a VivSnapshot and
+ * returns a typed view of it. Shared by file, HTTP, and IPC sources so errors
+ * read consistently regardless of transport.
+ *
+ * The `origin` string is interpolated into error messages (e.g. `"file foo.json"`,
+ * `"HTTP https://..."`, `"IPC /tmp/sock"`) to help the user pinpoint which source
+ * produced the malformed payload.
+ */
+export function validateSnapshotPayload(value: unknown, origin: string): VivSnapshot {
     if (typeof value !== "object" || value === null || Array.isArray(value)) {
-        throw new Error(`Snapshot at ${path} must be a JSON object.`);
+        throw new Error(`Snapshot from ${origin} must be a JSON object.`);
     }
     const obj = value as Record<string, unknown>;
     for (const key of ["timestamp", "entities", "vivInternalState"]) {
         if (!(key in obj)) {
             throw new Error(
-                `Snapshot at ${path} is missing the required field "${key}". ` +
+                `Snapshot from ${origin} is missing the required field "${key}". ` +
                     `Did you pass a content bundle by mistake?`
             );
         }
     }
     if (typeof obj["timestamp"] !== "number") {
-        throw new Error(`Snapshot at ${path}: "timestamp" must be a number.`);
+        throw new Error(`Snapshot from ${origin}: "timestamp" must be a number.`);
     }
     if (
         typeof obj["entities"] !== "object" ||
         obj["entities"] === null ||
         Array.isArray(obj["entities"])
     ) {
-        throw new Error(`Snapshot at ${path}: "entities" must be an object keyed by UID.`);
+        throw new Error(`Snapshot from ${origin}: "entities" must be an object keyed by UID.`);
     }
     if (
         typeof obj["vivInternalState"] !== "object" ||
         obj["vivInternalState"] === null ||
         Array.isArray(obj["vivInternalState"])
     ) {
-        throw new Error(`Snapshot at ${path}: "vivInternalState" must be an object.`);
+        throw new Error(`Snapshot from ${origin}: "vivInternalState" must be an object.`);
     }
     return {
         schemaVersion: typeof obj["schemaVersion"] === "string" ? obj["schemaVersion"] : "unknown",
