@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { writeFile } from "node:fs/promises";
 
 import type {
     ActionView,
@@ -10,6 +11,7 @@ import type {
     VivInternalState,
 } from "@siftystudio/viv-runtime";
 import { initializeVivRuntime, selectAction, EntityType } from "@siftystudio/viv-runtime";
+import { exportVivSnapshot } from "@siftystudio/viv-visualizer/snapshot";
 import set from "lodash/set";
 
 import { CONTENT_BUNDLE } from "./content";
@@ -141,6 +143,11 @@ async function main(): Promise<void> {
         console.log(`  [T=${action.timestamp}] ${summary}`);
     }
     console.log();
+
+    // Write a snapshot file so the visualizer can be pointed at it.
+    const snapshot = await exportVivSnapshot(ADAPTER);
+    await writeFile("snapshot.json", JSON.stringify(snapshot, null, 2), "utf8");
+    console.log("wrote snapshot.json  (viewable via: npx viv-viz snapshot.json)\n");
 }
 
 try {
