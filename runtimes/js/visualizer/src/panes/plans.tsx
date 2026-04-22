@@ -4,6 +4,7 @@ import React from "react";
 import type { PlanState, UID } from "@siftystudio/viv-runtime";
 
 import { fit, formatTimestamp, formatValue, type LabelResolver } from "../format.js";
+import type { FrameDiff } from "../history.js";
 import type { VivSnapshot } from "../snapshot.js";
 import { SelectableList, type SelectableListItem } from "../widgets/list.js";
 
@@ -14,6 +15,7 @@ export interface PlansPaneProps {
     selectedID: UID | null;
     onSelect: (id: UID) => void;
     focused: boolean;
+    diff?: FrameDiff;
 }
 
 /**
@@ -27,7 +29,8 @@ export function PlansPane({
     filter,
     selectedID,
     onSelect,
-    focused
+    focused,
+    diff
 }: PlansPaneProps): React.ReactElement {
     const activePlans = snapshot.vivInternalState.activePlans ?? {};
     const entries: [UID, PlanState][] = Object.entries(activePlans);
@@ -37,30 +40,43 @@ export function PlansPane({
     );
     filtered.sort(([, a], [, b]) => a.planName.localeCompare(b.planName));
 
-    const items: SelectableListItem[] = filtered.map(([id, plan]) => ({
-        key: id,
-        label: `${fit(plan.planName, 18)} ${fit(plan.currentPhase, 14)} pc=${plan.programCounter}`
-    }));
+    const items: SelectableListItem[] = filtered.map(([id, plan]) => {
+        const isNew = diff?.addedPlanIDs.has(id) ?? false;
+        const isChanged = diff?.changedPlanIDs.has(id) ?? false;
+        const marker = isNew ? "＋" : isChanged ? "●" : " ";
+        return {
+            key: id,
+            label: `${marker} ${fit(plan.planName, 18)} ${fit(plan.currentPhase, 14)} pc=${plan.programCounter}`
+        };
+    });
+
+    const changedCount =
+        (diff?.addedPlanIDs.size ?? 0) + (diff?.changedPlanIDs.size ?? 0);
 
     const selected =
         selectedID !== null ? (activePlans[selectedID] as PlanState | undefined) : undefined;
 
     return (
-        <Box flexGrow={1}>
-            <Box width="45%" flexDirection="column" marginRight={1}>
-                <SelectableList
-                    items={items}
-                    selectedKey={selectedID}
-                    onSelect={onSelect}
-                    focused={focused}
-                />
-            </Box>
-            <Box flexGrow={1} flexDirection="column">
-                {selected !== undefined ? (
-                    <PlanDetail plan={selected} resolveLabel={resolveLabel} />
-                ) : (
-                    <Text dimColor>Select a plan.</Text>
-                )}
+        <Box flexGrow={1} flexDirection="column">
+            {changedCount > 0 ? (
+                <Text color="yellow">{`${changedCount} plan${changedCount === 1 ? "" : "s"} changed since prev frame`}</Text>
+            ) : null}
+            <Box flexGrow={1}>
+                <Box width="45%" flexDirection="column" marginRight={1}>
+                    <SelectableList
+                        items={items}
+                        selectedKey={selectedID}
+                        onSelect={onSelect}
+                        focused={focused}
+                    />
+                </Box>
+                <Box flexGrow={1} flexDirection="column">
+                    {selected !== undefined ? (
+                        <PlanDetail plan={selected} resolveLabel={resolveLabel} />
+                    ) : (
+                        <Text dimColor>Select a plan.</Text>
+                    )}
+                </Box>
             </Box>
         </Box>
     );

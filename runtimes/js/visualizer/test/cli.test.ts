@@ -69,4 +69,37 @@ describe("parseArgs", () => {
         const got = parseArgs(["--http", "http://x", "--no-watch"]);
         expect(got).toMatchObject({ live: false });
     });
+
+    it("accepts --replay <path.jsonl>", () => {
+        const got = parseArgs(["--replay", "session.jsonl"]);
+        expect(got).toMatchObject({
+            source: { kind: "replay", path: "session.jsonl" }
+        });
+    });
+
+    it("accepts --history <N>", () => {
+        const got = parseArgs(["snap.json", "--history", "250"]);
+        expect(got).toMatchObject({ historyCapacity: 250 });
+    });
+
+    it("rejects --history < 1", () => {
+        const got = parseArgs(["snap.json", "--history", "0"]);
+        expect(got).toMatchObject({ error: expect.stringMatching(/--history/) });
+    });
+
+    it("accepts --record only with a live source", () => {
+        const good = parseArgs(["--http", "http://x", "--record", "out.jsonl"]);
+        expect(good).toMatchObject({ recordPath: "out.jsonl" });
+
+        const bad = parseArgs(["snap.json", "--record", "out.jsonl"]);
+        expect(bad).toMatchObject({ error: expect.stringMatching(/--record/) });
+
+        const alsoBad = parseArgs(["--replay", "in.jsonl", "--record", "out.jsonl"]);
+        expect(alsoBad).toMatchObject({ error: expect.stringMatching(/--record/) });
+    });
+
+    it("rejects --replay combined with another source", () => {
+        const got = parseArgs(["snap.json", "--replay", "in.jsonl"]);
+        expect(got).toMatchObject({ error: expect.stringMatching(/only one of/) });
+    });
 });
