@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+import { realpathSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
 import { render } from "ink";
 import React from "react";
 
@@ -101,7 +104,17 @@ export async function main(argv: string[]): Promise<number> {
     return 0;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+function isMainModule(moduleUrl: string, entry: string | undefined): boolean {
+    if (entry === undefined) return false;
+    const modulePath = fileURLToPath(moduleUrl);
+    try {
+        return realpathSync(entry) === modulePath;
+    } catch {
+        return entry === modulePath;
+    }
+}
+
+if (isMainModule(import.meta.url, process.argv[1])) {
     main(process.argv.slice(2)).then(
         (code) => {
             process.exit(code);
