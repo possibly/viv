@@ -93,7 +93,8 @@ export function App({
     }, [initialSnapshot]);
 
     // Keep the subscription stable across renders so we only ever hold one
-    // listener on the source. The sticky flag is read through a ref so the
+    // listener on the source. State that the listener consults but does not
+    // depend on for its identity (`sticky`) is read through a ref so the
     // latest value is always observed without re-subscribing.
     const stickyRef = useRef(sticky);
     stickyRef.current = sticky;
@@ -146,6 +147,13 @@ export function App({
         firstPlanID(snapshot)
     );
 
+    // `view` flips frequently and is consulted by the keybinding handler below
+    // for view-scoped keys (e.g. `h` only meaningful in the memories pane).
+    // Reading it through a ref avoids rebuilding the input handler each render
+    // and avoids the stale-closure trap that bit the prior pane-local approach.
+    const viewRef = useRef(view);
+    viewRef.current = view;
+
     useInput((input, key) => {
         if (filterEditing) return;
         if (input === "q") {
@@ -174,10 +182,7 @@ export function App({
             jumpToNewest();
         } else if (input === "p") {
             setSticky((s) => !s);
-        } else if (input === "h") {
-            // Always togglable; only has a visible effect when the Memories
-            // pane is active, so we don't bother gating on `view` (which would
-            // be captured in a stale closure from the previous render).
+        } else if (input === "h" && viewRef.current === "memories") {
             setMemoryHistoryView((v) => !v);
         }
     });
