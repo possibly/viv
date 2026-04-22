@@ -115,7 +115,7 @@ function PlanDetail({
                             .join(", ");
                         return (
                             <Text key={role}>
-                                <Text color="cyan">{role.padEnd(12)}</Text>
+                                <Text color="cyan">{fit(role, 14)}</Text>
                                 <Text>{rendered}</Text>
                             </Text>
                         );

@@ -4,6 +4,7 @@ import React from "react";
 import type { ActionView, UID } from "@siftystudio/viv-runtime";
 
 import {
+    fit,
     formatTimestamp,
     formatValue,
     hostProperties,
@@ -154,7 +155,7 @@ function ParticipantRow({
 }): React.ReactElement {
     return (
         <Text>
-            <Text color="cyan">{label.padEnd(12)}</Text>
+            <Text color="cyan">{fit(label, 14)}</Text>
             {ids.length === 0 ? (
                 <Text dimColor>(none)</Text>
             ) : (
@@ -179,7 +180,7 @@ function BindingsTable({
         <Box flexDirection="column">
             {entries.map(([role, value]) => (
                 <Text key={role}>
-                    <Text color="cyan">{role.padEnd(12)}</Text>
+                    <Text color="cyan">{fit(role, 14)}</Text>
                     <Text>{renderBinding(value, resolveLabel)}</Text>
                 </Text>
             ))}
