@@ -1,0 +1,49 @@
+{
+  "name": "@siftystudio/viv-visualizer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TUI for reviewing Viv runtime state (characters, memories, action ledger).",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "viv-viz": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./snapshot": {
+      "types": "./dist/snapshot.d.ts",
+      "import": "./dist/snapshot.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "ink": "^5.0.1",
+    "react": "^18.3.1"
+  },
+  "peerDependencies": {
+    "@siftystudio/viv-runtime": "^0.10.0"
+  },
+  "devDependencies": {
+    "@siftystudio/viv-runtime": "*",
+    "@types/node": "^24.3.0",
+    "@types/react": "^18.3.3",
+    "ink-testing-library": "^4.0.0",
+    "typescript": "5.9.2",
+    "vitest": "^4.1.0"
+  }
+}

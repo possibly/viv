@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "lodash": "^4.17.21",
-    "@siftystudio/viv-runtime": "^0.10.0"
+    "@siftystudio/viv-runtime": "^0.10.0",
+    "@siftystudio/viv-visualizer": "*"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.20",

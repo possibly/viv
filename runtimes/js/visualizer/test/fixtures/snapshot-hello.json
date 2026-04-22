@@ -1,0 +1,138 @@
+{
+    "schemaVersion": "0.10.2",
+    "timestamp": 20,
+    "entities": {
+        "tavern": {
+            "entityType": "location",
+            "id": "tavern",
+            "name": "The Tavern"
+        },
+        "alice": {
+            "entityType": "character",
+            "id": "alice",
+            "name": "Alice",
+            "location": "tavern",
+            "mood": 3,
+            "memories": {
+                "act_1": {
+                    "action": "act_1",
+                    "formationTimestamp": 0,
+                    "salience": 0.9,
+                    "associations": ["greeting"],
+                    "sources": [],
+                    "forgotten": false
+                },
+                "act_2": {
+                    "action": "act_2",
+                    "formationTimestamp": 10,
+                    "salience": 0.05,
+                    "associations": [],
+                    "sources": ["act_1"],
+                    "forgotten": true
+                }
+            }
+        },
+        "bob": {
+            "entityType": "character",
+            "id": "bob",
+            "name": "Bob",
+            "location": "tavern",
+            "mood": 0,
+            "memories": {
+                "act_1": {
+                    "action": "act_1",
+                    "formationTimestamp": 0,
+                    "salience": 0.7,
+                    "associations": ["greeting"],
+                    "sources": [],
+                    "forgotten": false
+                }
+            }
+        },
+        "carol": {
+            "entityType": "character",
+            "id": "carol",
+            "name": "Carol",
+            "location": "tavern",
+            "mood": -1,
+            "memories": {}
+        },
+        "act_1": {
+            "entityType": "action",
+            "id": "act_1",
+            "name": "greet",
+            "gloss": "Alice greets Bob",
+            "report": null,
+            "importance": 1.0,
+            "tags": ["social"],
+            "bindings": {
+                "initiator": "alice",
+                "recipient": "bob"
+            },
+            "scratch": {},
+            "location": "tavern",
+            "timestamp": 0,
+            "timeOfDay": null,
+            "causes": [],
+            "caused": ["act_2"],
+            "ancestors": [],
+            "descendants": ["act_2"],
+            "relayedActions": [],
+            "initiator": "alice",
+            "partners": [],
+            "recipients": ["bob"],
+            "bystanders": ["carol"],
+            "active": ["alice", "bob"],
+            "present": ["alice", "bob", "carol"]
+        },
+        "act_2": {
+            "entityType": "action",
+            "id": "act_2",
+            "name": "reply",
+            "gloss": "Bob replies to Alice",
+            "report": null,
+            "importance": 0.5,
+            "tags": ["social"],
+            "bindings": {
+                "initiator": "bob",
+                "recipient": "alice"
+            },
+            "scratch": {},
+            "location": "tavern",
+            "timestamp": 10,
+            "timeOfDay": null,
+            "causes": ["act_1"],
+            "caused": [],
+            "ancestors": ["act_1"],
+            "descendants": [],
+            "relayedActions": [],
+            "initiator": "bob",
+            "partners": [],
+            "recipients": ["alice"],
+            "bystanders": [],
+            "active": ["bob", "alice"],
+            "present": ["bob", "alice"]
+        }
+    },
+    "vivInternalState": {
+        "actionQueues": {
+            "alice": [
+                {
+                    "type": "action",
+                    "constructName": "greet",
+                    "id": "q_1",
+                    "urgent": false,
+                    "precastBindings": {},
+                    "causes": [],
+                    "initiator": "alice",
+                    "priority": 5
+                }
+            ]
+        },
+        "planQueue": [],
+        "activePlans": {},
+        "queuedConstructStatuses": {},
+        "actionEmbargoes": {},
+        "lastMemoryDecayTimestamp": null
+    }
+}

@@ -53,3 +53,4 @@ scratch/
 todo/
 .claude/
 .npmrc
+examples/*/snapshot.json
