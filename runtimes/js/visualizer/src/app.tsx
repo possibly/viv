@@ -137,7 +137,7 @@ export function App({
     const [memoryHistoryView, setMemoryHistoryView] = useState(initialMemoryHistoryView);
 
     const [selectedCharacterID, setSelectedCharacterID] = useState<UID | null>(() =>
-        firstCharacterID(snapshot)
+        firstCharacterID(snapshot, labelField)
     );
     const [selectedMemoryID, setSelectedMemoryID] = useState<UID | null>(null);
     const [selectedActionID, setSelectedActionID] = useState<UID | null>(() =>
@@ -344,7 +344,9 @@ function Header({ view, snapshot }: { view: View; snapshot: VivSnapshot }): Reac
                 ))}
             </Box>
             <Text dimColor>
-                {counts.characters} chars · {counts.actions} actions · {counts.locations} locs
+                {counts.characters} {counts.characters === 1 ? "char" : "chars"} ·{" "}
+                {counts.actions} {counts.actions === 1 ? "action" : "actions"} ·{" "}
+                {counts.locations} {counts.locations === 1 ? "loc" : "locs"}
             </Text>
         </Box>
     );
@@ -366,11 +368,20 @@ function countEntities(snapshot: VivSnapshot): {
     return { characters, actions, locations };
 }
 
-function firstCharacterID(snapshot: VivSnapshot): UID | null {
-    for (const e of Object.values(snapshot.entities)) {
-        if (e.entityType === "character") return e.id;
-    }
-    return null;
+function firstCharacterID(snapshot: VivSnapshot, labelField: string | null): UID | null {
+    // Match the ordering the Characters pane renders so the initial `>` cursor
+    // always lands on the top visible row.
+    const characters = Object.values(snapshot.entities).filter(
+        (e) => e.entityType === "character"
+    );
+    if (characters.length === 0) return null;
+    const labelFor = (e: (typeof characters)[number]): string => {
+        if (labelField === null) return e.id;
+        const v = (e as Record<string, unknown>)[labelField];
+        return typeof v === "string" && v.length > 0 ? v : e.id;
+    };
+    characters.sort((a, b) => labelFor(a).localeCompare(labelFor(b)));
+    return characters[0]!.id;
 }
 
 function firstActionID(snapshot: VivSnapshot): UID | null {
@@ -387,8 +398,11 @@ function firstActionID(snapshot: VivSnapshot): UID | null {
 }
 
 function firstPlanID(snapshot: VivSnapshot): UID | null {
-    const ids = Object.keys(snapshot.vivInternalState.activePlans ?? {});
-    return ids.length > 0 ? ids[0]! : null;
+    // Match the Plans pane's alphabetical ordering by planName.
+    const entries = Object.entries(snapshot.vivInternalState.activePlans ?? {});
+    if (entries.length === 0) return null;
+    entries.sort(([, a], [, b]) => a.planName.localeCompare(b.planName));
+    return entries[0]![0];
 }
 
 function clampToRing(index: number, ring: SnapshotRing): number {

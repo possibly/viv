@@ -80,6 +80,7 @@ export function SelectableList({
                         key={item.key}
                         {...colorProps}
                         inverse={isSelected && focused}
+                        wrap="truncate-end"
                     >
                         {isSelected ? "> " : "  "}
                         {item.label}

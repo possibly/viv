@@ -286,6 +286,7 @@ export interface MemoryEvent {
     readonly timestamp: DiegeticTimestamp;
     readonly kind:
         | "formed"
+        | "first-seen"
         | "dropped"
         | "restored"
         | "forgotten"
@@ -352,10 +353,22 @@ export function computeMemoryTimeline(
         });
 
         if (!priorPresent) {
+            // Distinguish diegetic formation (the memory was genuinely formed
+            // at this frame) from "first seen in the ring" (the memory existed
+            // before the ring started retaining frames). Reporting the latter
+            // as "formed" produces an event timestamp that contradicts
+            // `mem.formationTimestamp` in the detail pane.
+            const diegeticallyFormed =
+                mem.formationTimestamp === frame.snapshot.timestamp;
             events.push({
                 frameIndex: frame.index,
                 timestamp: frame.snapshot.timestamp,
-                kind: prior === null ? "formed" : "restored",
+                kind:
+                    prior === null
+                        ? diegeticallyFormed
+                            ? "formed"
+                            : "first-seen"
+                        : "restored",
                 salience: mem.salience
             });
         } else if (prior !== null) {

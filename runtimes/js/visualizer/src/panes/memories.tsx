@@ -67,7 +67,7 @@ export function MemoriesPane({
     const memDiff: MemoryDiff | null = diff?.memoryDiffs.get(characterID) ?? null;
     const entries: [UID, CharacterMemory][] = Object.entries(character.memories);
     const filtered = entries.filter(([actionID, mem]) =>
-        matches(actionID, mem, snapshot, filter)
+        matches(actionID, mem, snapshot, filter, resolveLabel)
     );
     filtered.sort(([, a], [, b]) => b.salience - a.salience);
 
@@ -184,8 +184,8 @@ function MemoryHeader({
                 <Text bold>associations:</Text>
                 <Text>
                     {memory.associations.length === 0
-                        ? " (none)"
-                        : ` ${memory.associations.join(", ")}`}
+                        ? "(none)"
+                        : memory.associations.join(", ")}
                 </Text>
             </Text>
             <Text>
@@ -333,6 +333,8 @@ function eventColor(kind: MemoryEvent["kind"]): string {
         case "unforgotten":
         case "salience-rose":
             return "green";
+        case "first-seen":
+            return "gray";
         case "forgotten":
         case "dropped":
         case "salience-fell":
@@ -344,6 +346,8 @@ function eventGlyph(kind: MemoryEvent["kind"]): string {
     switch (kind) {
         case "formed":
             return "＋";
+        case "first-seen":
+            return "◎";
         case "restored":
             return "↻";
         case "unforgotten":
@@ -387,12 +391,22 @@ function matches(
     actionID: UID,
     memory: CharacterMemory,
     snapshot: VivSnapshot,
-    filter: string
+    filter: string,
+    resolveLabel: LabelResolver
 ): boolean {
     if (filter.length === 0) return true;
     const needle = filter.toLowerCase();
     const action = snapshot.entities[actionID] as ActionView | undefined;
     if (memory.associations.some((a) => a.toLowerCase().includes(needle))) return true;
     if (action && action.name.toLowerCase().includes(needle)) return true;
+    if (
+        memory.sources.some(
+            (s) =>
+                s.toLowerCase().includes(needle) ||
+                resolveLabel(s).toLowerCase().includes(needle)
+        )
+    ) {
+        return true;
+    }
     return false;
 }

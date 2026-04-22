@@ -54,8 +54,16 @@ function renderTree(
     maxDepth: number
 ): string[] {
     const out: string[] = [];
-    const visited = new Set<UID>();
-    walk(rootID, "", true, 0);
+    const visited = new Set<UID>([rootID]);
+    const root = actions[rootID];
+    if (!root) return out;
+    // Render the root's neighbours as the top level; the selected action
+    // itself is shown in the detail pane above the tree, so repeating it
+    // here would be redundant noise.
+    const directEdges = direction === "causes" ? root.causes : root.caused;
+    directEdges.forEach((childID, i) => {
+        walk(childID, "", i === directEdges.length - 1, 1);
+    });
     return out;
 
     function walk(id: UID, prefix: string, isLast: boolean, depth: number): void {
@@ -63,12 +71,12 @@ function renderTree(
         const label = action
             ? `${action.name} — ${resolveLabel(action.initiator)} @T=${action.timestamp}`
             : `<missing ${id}>`;
-        const connector = depth === 0 ? "" : isLast ? "└─ " : "├─ ";
+        const connector = isLast ? "└─ " : "├─ ";
         out.push(`${prefix}${connector}${label}`);
         if (depth >= maxDepth || visited.has(id) || !action) return;
         visited.add(id);
         const nextIDs = direction === "causes" ? action.causes : action.caused;
-        const childPrefix = depth === 0 ? "" : prefix + (isLast ? "   " : "│  ");
+        const childPrefix = prefix + (isLast ? "   " : "│  ");
         nextIDs.forEach((nextID, i) => {
             walk(nextID, childPrefix, i === nextIDs.length - 1, depth + 1);
         });
