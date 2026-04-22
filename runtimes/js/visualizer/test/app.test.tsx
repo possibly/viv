@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import { App } from "../src/app.js";
 import type { VivSnapshot } from "../src/snapshot.js";
+import type { SnapshotListener, SnapshotSource } from "../src/source.js";
 
 const FIXTURE = new URL("./fixtures/snapshot-hello.json", import.meta.url).pathname;
 
@@ -70,4 +71,60 @@ describe("App — smoke renders per pane", () => {
         expect(frame).toContain("0.10.2");
         unmount();
     });
+
+    it("updates its rendered timestamp when a live source emits a new snapshot", async () => {
+        const snapshot = await loadFixture();
+        const source = new FakeSource(snapshot);
+        const { lastFrame, unmount } = render(
+            <App snapshot={snapshot} labelField="name" source={source} />
+        );
+        expect(lastFrame() ?? "").toContain("T=20");
+        expect(lastFrame() ?? "").toContain("live (0)");
+
+        // Wait for React's useEffect to run and subscribe.
+        for (let i = 0; i < 20; i++) {
+            if (source.listenerCount() > 0) break;
+            await new Promise((resolve) => setTimeout(resolve, 10));
+        }
+        expect(source.listenerCount()).toBeGreaterThan(0);
+
+        source.emit({ ...snapshot, timestamp: 42 });
+        for (let i = 0; i < 20; i++) {
+            if ((lastFrame() ?? "").includes("T=42")) break;
+            await new Promise((resolve) => setTimeout(resolve, 10));
+        }
+        expect(lastFrame() ?? "").toContain("T=42");
+        expect(lastFrame() ?? "").toContain("live (1)");
+
+        unmount();
+    });
 });
+
+class FakeSource implements SnapshotSource {
+    readonly label = "fake";
+    private listeners = new Set<SnapshotListener>();
+
+    constructor(private current: VivSnapshot) {}
+
+    async getLatest(): Promise<VivSnapshot> {
+        return this.current;
+    }
+
+    subscribe(listener: SnapshotListener): () => void {
+        this.listeners.add(listener);
+        return () => this.listeners.delete(listener);
+    }
+
+    async dispose(): Promise<void> {
+        this.listeners.clear();
+    }
+
+    emit(next: VivSnapshot): void {
+        this.current = next;
+        for (const listener of this.listeners) listener(next);
+    }
+
+    listenerCount(): number {
+        return this.listeners.size;
+    }
+}

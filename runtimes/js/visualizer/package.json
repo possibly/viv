@@ -20,6 +20,14 @@
     "./snapshot": {
       "types": "./dist/snapshot.d.ts",
       "import": "./dist/snapshot.js"
+    },
+    "./source": {
+      "types": "./dist/source.d.ts",
+      "import": "./dist/source.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
     }
   },
   "files": [
