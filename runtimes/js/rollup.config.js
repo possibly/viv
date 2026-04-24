@@ -9,6 +9,24 @@ import terser from "@rollup/plugin-terser";
 const require = createRequire(import.meta.url);
 const pkg = require("./package.json");
 
+const onwarn = (warning, warn) => {
+    if (warning.code === "CIRCULAR_DEPENDENCY") return;
+    if (warning.code === "THIS_IS_UNDEFINED") return;
+    warn(warning);
+};
+
+const basePlugins = [
+    sourcemaps(),
+    json(),
+    resolve({ extensions: [".mjs", ".js", ".json"], browser: false }),
+    commonjs(),
+    terser({
+        keep_classnames: true,
+        keep_fnames: true,
+        format: { comments: /^!|@preserve|@license|@cc_on/i }
+    })
+];
+
 /** @type {import('rollup').RollupOptions[]} */
 export default [
     {
@@ -26,18 +44,25 @@ export default [
                 exports: "named"
             }
         ],
-        // Circular dependencies between runtime subsystems are safe here. All files are purely
-        // composed of function/type definitions with no top-level side effects, meaning every
-        // import is fully resolved by the time any function body executes.
-        onwarn(warning, warn) {
-            if (warning.code === "CIRCULAR_DEPENDENCY") return;
-            warn(warning);
-        },
+        onwarn,
         external: Object.keys(pkg.dependencies || {}),
+        plugins: basePlugins
+    },
+    // Browser bundle: ESM with dependencies inlined. Targets browsers directly via a
+    // plain <script type="module">, with no bare-specifier resolution required.
+    {
+        input: "temp/index.js",
+        output: {
+            file: "dist/index.browser.js",
+            format: "esm",
+            sourcemap: true,
+            inlineDynamicImports: true
+        },
+        onwarn,
         plugins: [
             sourcemaps(),
             json(),
-            resolve({ extensions: [".mjs", ".js", ".json"] }),
+            resolve({ extensions: [".mjs", ".js", ".json"], browser: true, preferBuiltins: false }),
             commonjs(),
             terser({
                 keep_classnames: true,
