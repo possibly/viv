@@ -8,10 +8,11 @@ compiler and any Viv runtime.
 
 Note that a canonical JSON schema is also stored in `viv_compiler/schemas/content-bundle.schema.json`,
 and that this is generated at the same time the runtime's API schema is generated, which enforces
-agreement between them. The final step in compilation is to structurally validate the compiled
-content bundle against this schema. When a content bundle is registered with the Viv runtime,
-the runtime structurally validates it using its corresponding JSON schema. Note that this JSON
-schema is generated from the TypeScript types contained in the Viv JavaScript runtime.
+agreement between them. Instead of using the schema during compilation, it's used during offline
+testing of the Viv compiler, since that provides sufficient guarantees without slowing down
+compilation. When a content bundle is registered with the Viv runtime, the runtime structurally
+validates it using its corresponding JSON schema. Note that this JSON schema is generated from
+the TypeScript types contained in the Viv JavaScript runtime.
 """
 
 from .content_types import *

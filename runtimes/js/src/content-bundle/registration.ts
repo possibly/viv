@@ -10,29 +10,30 @@ import { SCHEMA_VALIDATORS, getSchemaVersion, validateAgainstSchema } from "../s
 export let CONTENT_BUNDLE: ContentBundle;
 
 /**
- * Plugs in the compiled content bundle for the host application at hand, making it accessible to the runtime.
+ * Plugs in the compiled content bundle for the host application at hand,
+ * making it accessible to the runtime.
  *
- * @param bundle - The Viv compiled content bundle to register.
+ * @param contentBundle - The Viv compiled content bundle to register.
  * @returns Nothing.
  */
-export function setContentBundle(bundle: unknown): void {
+export function setContentBundle(contentBundle: unknown): void {
     // Validate the content bundle. If this fails, an error will be thrown.
-    assertContentBundle(bundle);
-    assertCompatibleContentBundle(bundle);
+    assertContentBundle(contentBundle);
+    assertCompatibleContentBundle(contentBundle);
     // If we get to here, validation succeeded, so we can set the bundle hook
-    CONTENT_BUNDLE = bundle;
+    CONTENT_BUNDLE = contentBundle;
 }
 
 /**
  * Returns the given content bundle, assuming it matches the expected shape.
  *
- * @param bundle - The Viv compiled content bundle whose shape will be checked.
+ * @param contentBundle - The Viv compiled content bundle whose shape will be checked.
  * @returns If the shape passes, the given content bundle, cast in the proper type.
- * @throws If the given content bundle does not have the expected shape.
+ * @throws {VivValidationError} If the given content bundle does not have the expected shape.
  */
-function assertContentBundle(bundle: unknown): asserts bundle is ContentBundle {
+function assertContentBundle(contentBundle: unknown): asserts contentBundle is ContentBundle {
     validateAgainstSchema<ContentBundle>(
-        bundle,
+        contentBundle,
         SCHEMA_VALIDATORS.contentBundle,
         ValidationErrorSubject.ContentBundle
     );
@@ -85,8 +86,8 @@ export function assertCompatibleContentBundle(contentBundle: ContentBundle): voi
             ]
         );
     }
-    // Otherwise, the bundle's minor version must not exceed the runtime's, since the runtime would
-    // not yet support features introduced in a newer minor version of the schema
+    // Otherwise, the bundle's minor version must not exceed the runtime's, since the runtime
+    // would not yet support features introduced in a newer minor version of the schema.
     if (semver.minor(bundleVersion) > semver.minor(runtimeVersion)) {
         throw new VivValidationError(
             "Incompatible content bundle",

@@ -52,15 +52,15 @@ class VisitorMixinActions(PTNodeVisitor):
             else:
                 accumulated_fields[field_name] = field_value
         # Ensure `roles` is present, unless it's a child action
-        if "roles" not in action_body:
-            if "parent" not in accumulated_fields:
+        if "roles" not in accumulated_fields:
+            if "_parent" not in accumulated_fields:
                 error_message = (
                     f"Action '{accumulated_fields['name']}' is missing 'roles' field "
                     f"(required for actions that do not inherit from a parent action)"
                 )
                 raise errors.VivCompileError(error_message, source=utils.derive_source_annotations(node=node))
         # Fill out the minimal intermediate structure, seeding with default values as applicable
-        if "parent" in accumulated_fields:
+        if "_parent" in accumulated_fields:
             # If it's a child action, we won't seed defaults for any heritable fields, because
             # such defaults would override what would otherwise be inherited from the parent.
             intermediate_action_definition = internal_types.IntermediateChildActionDefinition(
@@ -68,7 +68,7 @@ class VisitorMixinActions(PTNodeVisitor):
                 name=accumulated_fields["name"],
                 _template=accumulated_fields.get("_template", False),
                 reserved=accumulated_fields.get("reserved", False),
-                parent=accumulated_fields["parent"],
+                _parent=accumulated_fields["_parent"],
                 _join_directives=accumulated_fields.get(VisitorMixinActions.JOIN_DIRECTIVES_FIELD_NAME, [])
             )
             # Add in any fields that were specified for the child. This will duplicate some of
@@ -87,7 +87,7 @@ class VisitorMixinActions(PTNodeVisitor):
                 name=accumulated_fields["name"],
                 _template=accumulated_fields.get("_template", False),
                 reserved=accumulated_fields.get("reserved", False),
-                parent=accumulated_fields.get("parent", None),
+                _parent=accumulated_fields.get("_parent", None),
                 roles=accumulated_fields["roles"],
                 importance=accumulated_fields.get("importance", external_types.FloatField(
                     type=external_types.ExpressionDiscriminator.FLOAT,
@@ -147,7 +147,7 @@ class VisitorMixinActions(PTNodeVisitor):
         _, children: list[external_types.ActionName]
     ) -> dict[str, external_types.ActionName]:
         """Visit a <parent_action_declaration> node."""
-        return {"parent": children[0]}
+        return {"_parent": children[0]}
 
     @staticmethod
     def visit_action_body(_, children: list[Any]) -> dict[str, Any]:

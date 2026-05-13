@@ -20,12 +20,12 @@ export function registerVivAdapter(adapter: unknown): void {
 /**
  * Validates the given Viv adapter for the host application at hand.
  *
- * This process makes use of structural validation (against a generated schema) and also a battery of
- * manual checks that confirm the adapter is compatible with the content bundle it will be paired with.
+ * This process makes use of structural validation (against a generated schema) and also a battery of manual
+ * checks that confirm the adapter is compatible with the content bundle with which it will be paired.
  *
  * @param adapter - A Viv adapter for the host application at hand.
  * @returns If validation succeeds.
- * @throws If validation fails.
+ * @throws {VivValidationError} If validation fails.
  */
 function validateVivAdapter(adapter: unknown): asserts adapter is HostApplicationAdapter {
     // First, structurally validate the adapter
@@ -51,7 +51,7 @@ function validateVivAdapter(adapter: unknown): asserts adapter is HostApplicatio
  *
  * @param adapter - A Viv adapter for the host application at hand.
  * @returns If all config parameters are valid.
- * @throws If any config parameter has an invalid value.
+ * @throws {VivValidationError} If any config parameter has an invalid value.
  */
 function validateConfigParameters(adapter: HostApplicationAdapter): void {
     if (adapter.config?.loopMaxIterations !== undefined) {
@@ -94,7 +94,7 @@ function validateConfigParameters(adapter: HostApplicationAdapter): void {
  *
  * @param adapter - A Viv adapter for the host application at hand.
  * @returns If all referenced enums are defined.
- * @throws If any referenced enum is missing from the adapter.
+ * @throws {VivValidationError} If any referenced enum is missing from the adapter.
  */
 function validateReferencedEnums(adapter: HostApplicationAdapter): void {
     for (const enumName of CONTENT_BUNDLE.metadata.referencedEnums) {
@@ -119,7 +119,7 @@ function validateReferencedEnums(adapter: HostApplicationAdapter): void {
  *
  * @param adapter - A Viv adapter for the host application at hand.
  * @returns If all referenced custom functions are defined.
- * @throws If any referenced custom function is missing from the adapter.
+ * @throws {VivValidationError} If any referenced custom function is missing from the adapter.
  */
 function validateReferencedFunctions(adapter: HostApplicationAdapter): void {
     for (const functionName of CONTENT_BUNDLE.metadata.referencedFunctionNames) {
@@ -142,7 +142,7 @@ function validateReferencedFunctions(adapter: HostApplicationAdapter): void {
  *
  * @param adapter - A Viv adapter for the host application at hand.
  * @returns If the adapter is compatible with the content bundle's time-of-day usage.
- * @throws If the adapter opts out of time-of-day modeling while the content bundle requires it.
+ * @throws {VivValidationError} If the adapter opts out of time-of-day modeling while the content bundle requires it.
  */
 function validateTimeOfDayCompatibility(adapter: HostApplicationAdapter): void {
     // If the adapter implements `getCurrentTimeOfDay`, there is nothing to check here
@@ -182,7 +182,8 @@ function validateTimeOfDayCompatibility(adapter: HostApplicationAdapter): void {
  *
  * @param adapter - A Viv adapter for the host application at hand.
  * @returns If the adapter is compatible with the content bundle's entity-data assignment usage.
- * @throws If the content bundle includes entity-data assignments while the adapter does not support them.
+ * @throws {VivValidationError} If the content bundle includes entity-data assignments while
+ *     the adapter does not support them.
  */
 function validateEntityDataAssignmentCompatibility(adapter: HostApplicationAdapter): void {
     if (!adapter.updateEntityProperty && CONTENT_BUNDLE.metadata.hasEntityDataAssignments) {
@@ -205,7 +206,7 @@ function validateEntityDataAssignmentCompatibility(adapter: HostApplicationAdapt
  *
  * @param adapter - A Viv adapter for the host application at hand.
  * @returns If all watched constructs are defined in the content bundle.
- * @throws If any watched construct is not defined in the content bundle.
+ * @throws {VivValidationError} If any watched construct is not defined in the content bundle.
  */
 function validateWatchlists(adapter: HostApplicationAdapter): void {
     const watchlists = adapter.debug?.watchlists;

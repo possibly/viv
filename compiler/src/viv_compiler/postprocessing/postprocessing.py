@@ -8,7 +8,7 @@ from ._role_dependencies import build_role_dependency_forests, build_condition_g
 
 
 def postprocess_combined_ast(*, combined_ast: internal_types.CombinedAST) -> None:
-    """Postprocess the given combined AST by inserting higher-order metadata and performing other manipulations.
+    """Postprocess the given combined AST.
 
     Args:
         combined_ast: An abstract syntax tree produced by the Visitor class, integrating the
@@ -160,7 +160,7 @@ def _resolve_positional_bindings(*, combined_ast: internal_types.CombinedAST) ->
                         f"references undefined trope: '{trope_fit_expression['tropeName']}'"
                     ),
                     source=trope_fit_source
-                )
+                ) from None
             # Resolve any positional bindings
             trope_fit_binding_role_names = list(trope_fit_expression['bindings']['roles'])
             for bound_role_name in trope_fit_binding_role_names:

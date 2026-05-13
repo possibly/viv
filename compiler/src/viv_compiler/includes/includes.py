@@ -17,8 +17,7 @@ def integrate_included_files(
     ast: internal_types.AST,
     entry_point_file_path: Path,
 ) -> internal_types.CombinedAST:
-    """Handle any `include` declarations in the given AST (including any recursive ones)
-    and return a dictionary containing trope definitions and action definitions.
+    """Handle any `include` declarations in the given AST (including any recursive ones) and return a combined AST.
 
     Args:
         viv_parser: A prepared Viv parser.
@@ -42,7 +41,7 @@ def integrate_included_files(
         included_file_asts=all_included_asts
     )
     # We'll start with the AST for the user's entry file. If there's no includes,
-    # will end up being the combined AST.
+    # this will end up being the combined AST.
     combined_ast = internal_types.CombinedAST(
         actions=[],
         actionSelectors=[],

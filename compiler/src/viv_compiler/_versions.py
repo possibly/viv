@@ -51,7 +51,7 @@ def _read_schema_version() -> str:
     """Return the current content-bundle schema version.
 
     This version tracks the shape of compiled content bundles, which constitutes
-     the contract between the compiler and any Viv runtime.
+    the contract between the compiler and any Viv runtime.
 
     Returns:
         The current content-bundle schema version.

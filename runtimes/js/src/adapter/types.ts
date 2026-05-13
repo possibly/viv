@@ -64,7 +64,7 @@ export interface HostApplicationAdapter {
      *
      * @param entityID - The entity ID for the entity whose data is to be returned.
      * @returns The requested entity view.
-     * @throws If there is no entity with the given entity ID.
+     * @throws {Error} If there is no entity with the given entity ID.
      */
     readonly getEntityView: (entityID: UID) => AsyncOrSync<EntityView>;
     /**
@@ -148,7 +148,7 @@ export interface HostApplicationAdapter {
      * @param locationID - If specified, the entity ID for a location to search for entities,
      *     which should only be submitted for characters and items.
      * @returns An array of entity IDs.
-     * @throws If `locationID` is present but `entityType` is not {@link EntityType.Character}
+     * @throws {Error} If `locationID` is present but `entityType` is not {@link EntityType.Character}
      *     or {@link EntityType.Item}.
      */
     readonly getEntityIDs: (entityType: EntityType, locationID?: UID) => AsyncOrSync<UID[]>;
@@ -250,8 +250,9 @@ export interface HostApplicationAdapter {
         value: unknown
     ) => AsyncOrSync<void>;
     /**
-     * If supplied, configuration parameters controlling various aspects of Viv system behavior. Default
-     * values will be used for parameters that are not supplied.
+     * If supplied, configuration parameters controlling various aspects of Viv system behavior.
+     *
+     * Default values will be used for parameters that are not supplied.
      */
     readonly config?: HostApplicationAdapterConfig;
     /**
@@ -307,8 +308,9 @@ export type AsyncOrSync<T> = T | Promise<T>;
  */
 export interface HostApplicationAdapterConfig {
     /**
-     * The maximum number of iterations to allow in a Viv loop. Rather than throwing an error if
-     * the threshold is reached, the runtime will simply exit the loop.
+     * The maximum number of iterations to allow in a Viv loop.
+     *
+     * Rather than throwing an error if the threshold is reached, the runtime will simply exit the loop.
      *
      * @defaultValue 999
      */
@@ -541,7 +543,7 @@ export interface HostApplicationAdapterFastPaths {
      *     a string so that you can use something like Lodash to carry out the retrieval, you'll need to take
      *     care to ensure that your conversion procedure is properly robust.
      * @returns The value stored at the specified path in the given entity's data.
-     * @throws If the property does not exist.
+     * @throws {Error} If the property does not exist.
      */
     readonly getEntityProperty?: (entityID: UID, propertyPath: (string | number)[]) => AsyncOrSync<unknown>;
     /**
@@ -839,8 +841,8 @@ export type CustomFunctionName = string;
  * Note that you can actually define whatever starting point you'd like, so long as the
  * time unit is minutes and timestamps increase monotonically as a simulation proceeds.
  *
- * Every host application must be capable of representing a given point in
- * story time as a simple numeric timestamp, in the manner of Unix epoch time.
+ * Every host application must be capable of representing a given point in story time
+ * as a simple numeric timestamp, in the manner of Unix epoch time.
  *
  * @category Other
  */

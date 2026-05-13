@@ -8,7 +8,7 @@ This high-level module invokes other components to orchestrate the full compilat
   * Honor `include` statements (imports between Viv files), by producing and combining ASTs.
   * Postprocess the combined AST to produce finalized construct definitions.
   * Package up the construct definitions into a proper compiled content bundle.
-  * Validate the content bundle, including against a canonical schema.
+  * Validate the content bundle semantically.
   * Emit JSON-serializable output for the validated content bundle.
 """
 

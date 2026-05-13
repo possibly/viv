@@ -48,11 +48,8 @@ class ContentBundle(TypedDict):
 class ContentBundleMetadata(TypedDict):
     """Metadata on the content bundle.
 
-    This metadata attaches a Viv version number to the content bundle, which guarantees
-    compatibility with any Viv runtime with the same version number.
-
-    The metadata here is also used to support validation during initialization of a host application's
-    Viv adapter by, e.g., confirming that any referenced enums and adapter functions actually exist.
+    This is intended to support validation during the initialization of a host application's Viv
+    adapter by, e.g., confirming that any referenced enums and custom functions actually exist.
     """
     # The version number for the Viv content-bundle schema at the time of compiling this
     # content bundle. All Viv runtimes will have a supported version range for content

@@ -6,7 +6,7 @@ import contentBundleSchema from "./content-bundle.schema.json";
 const SCHEMA_VERSION: string = contentBundleSchema.version;
 
 /**
- * Returns the supported Viv content-bundle schema version supported by this runtime.
+ * Returns the Viv content-bundle schema version supported by this runtime.
  *
  * This will be a string in semver notation, and compatibility will be enforced between this
  * version number and the one stamped into a content bundle being registered -- a check that

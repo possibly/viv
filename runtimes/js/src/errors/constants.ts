@@ -1,5 +1,5 @@
 /**
- * Enum containing the canonical error names.
+ * Enum containing the canonical Viv error names.
  *
  * *This is an internal type that is not part of the stable API surface. Its shape may change in any release.*
  *
@@ -12,7 +12,7 @@ export enum VivErrorName {
      */
     VivError = "VivError",
     /**
-     * thrown when something goes wrong during Viv runtime execution.
+     * Error thrown when something goes wrong during Viv runtime execution.
      */
     VivExecutionError = "VivExecutionError",
     /**
@@ -45,10 +45,6 @@ export enum VivErrorName {
  */
 export enum ValidationErrorSubject {
     /**
-     * A content bundle that failed validation upon registration.
-     */
-    ContentBundle = "contentBundle",
-    /**
      * A host-application adapter that failed validation upon registration.
      */
     Adapter = "adapter",
@@ -56,6 +52,10 @@ export enum ValidationErrorSubject {
      * Arguments to a Viv API function that failed validation upon invocation.
      */
     APICall = "apiCall",
+    /**
+     * A content bundle that failed validation upon registration.
+     */
+    ContentBundle = "contentBundle",
 }
 
 /**

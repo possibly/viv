@@ -29,15 +29,15 @@ let VIV_IS_INITIALIZED = false;
  * @category Initialization
  * @example
  * ```ts
- * import { MY_COMPILED_CONTENT_BUNDLE } from "./bundle.json";
+ * import { MY_COMPILED_CONTENT_BUNDLE } from "./my-bundle.json";
  * import { MY_ADAPTER } from "./my-adapter";
  *
  * const initialized = initializeVivRuntime({ contentBundle: MY_COMPILED_CONTENT_BUNDLE, adapter: MY_ADAPTER });
  * ```
  * @param args - See {@link InitializeVivRuntimeArgs}.
  * @returns - See {@link InitializeVivRuntimeResult}.
- * @throws If the given content bundle and adapter do not pass validation. In cases of multiple
- *     structural issues, only the first will be reported (to keep error messages manageable).
+ * @throws {VivValidationError} If the given content bundle and adapter do not pass validation. In cases
+ *     of multiple structural issues, only the first will be reported (to keep error messages manageable).
  */
 export function initializeVivRuntimeAPI(args: InitializeVivRuntimeArgs): InitializeVivRuntimeResult {
     // Register the content bundle
@@ -65,7 +65,7 @@ export function vivRuntimeIsInitializedAPI(): VivRuntimeIsInitializedResult {
 }
 
 /**
- * Returns the supported Viv content-bundle schema version supported by this runtime.
+ * Returns the Viv content-bundle schema version supported by this runtime.
  *
  * This will be a string in semver notation (e.g., `"1.0.16"`), and compatibility will be enforced
  * between this version number and the one stamped into a content bundle being registered.

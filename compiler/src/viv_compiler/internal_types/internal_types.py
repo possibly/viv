@@ -58,18 +58,18 @@ class IntermediateActionDefinition(IntermediateConstructDefinitionBase, total=Fa
 
     The shape captures the structure of action definitions throughout postprocessing.
     """
-    # The `parent` field in its final schema-compliant shape, used as a discriminator distinguishing
-    # an `IntermediateActionDefinition` from an `IntermediateChildActionDefinition`.
-    parent: Required[None]
-    # The discriminator for the action construct
-    type: Required[external_types.ConstructDiscriminator.ACTION]
+    # Always `None` to cue that inheritance has already been handled, as needed. This is used as a discriminator
+    # distinguishing an `IntermediateActionDefinition` from an `IntermediateChildActionDefinition`.
+    _parent: Required[None]
     # A list containing all effects defined for the action (pre-wrapping)
     _effects_raw: Required[list[external_types.Expression]]
     # A list containing all reactions declared for the action (pre-wrapping)
     _reactions_raw: Required[list[external_types.Reaction]]
     # Whether this is a transient 'template action' that is only intended to be inherited
-    # by child actions, after which point it is deleted.
+    # by child actions, after which it is deleted.
     _template: Required[bool]
+    # The `type` field in its final schema-compliant shape
+    type: Required[external_types.ConstructDiscriminator.ACTION]
     # (Assigned during postprocessing) The `initiator` field in its final schema-compliant shape
     initiator: external_types.RoleName
     # (Assigned during postprocessing) The `roleForestRoots` field in its final schema-compliant shape
@@ -108,21 +108,21 @@ class IntermediateChildActionDefinition(TypedDict, total=False):
     The shape captures the structure of child action definitions prior to inheritance handling,
     when they have only a few required properties.
     """
-    # The `parent` field in its final schema-compliant shape, used as a discriminator distinguishing
-    # an `IntermediateActionDefinition` from an `IntermediateChildActionDefinition`.
-    parent: Required[external_types.ActionName]
+    # The name of the action from which this one inherits. This is also used as a discriminator
+    # distinguishing an `IntermediateActionDefinition` from an `IntermediateChildActionDefinition`.
+    _parent: Required[external_types.ActionName]
     # Directives each indicating whether to merge a given field value with that of a parent,
     # as opposed to overriding the parent field value entirely.
     _join_directives: Required[list[Sentinel]]
-    # The discriminator for the action construct
-    type: Required[external_types.ConstructDiscriminator.ACTION]
     # A list containing all effects defined for the action (pre-wrapping)
     _effects_raw: list[external_types.Expression]
     # A list containing all reactions declared for the action (pre-wrapping)
     _reactions_raw: list[external_types.Reaction]
     # Whether this is a transient 'template action' that is only intended to be inherited
-    # by child actions, after which point it is deleted.
+    # by child actions, after which it is deleted.
     _template: Required[bool]
+    # The `type` field in its final schema-compliant shape
+    type: Required[external_types.ConstructDiscriminator.ACTION]
     # The `name` field in its final schema-compliant shape
     name: Required[external_types.ActionName]
     # The `reserved` field in its final schema-compliant shape
@@ -150,7 +150,7 @@ class IntermediatePlanDefinition(IntermediateConstructDefinitionBase, total=Fals
 
     The shape captures the structure of plan definitions throughout postprocessing.
     """
-    # The discriminator for the plan construct
+    # The `type` field in its final schema-compliant shape
     type: Required[Literal[external_types.ConstructDiscriminator.PLAN]]
     # (Assigned during postprocessing) The `roleForestRoots` field in its final schema-compliant shape
     roleForestRoots: list[external_types.RoleName]
@@ -169,7 +169,7 @@ class IntermediateQueryDefinition(IntermediateConstructDefinitionBase, total=Fal
 
     The shape captures the structure of query definitions throughout postprocessing.
     """
-    # The discriminator for the query construct
+    # The `type` field in its final schema-compliant shape
     type: Required[Literal[external_types.ConstructDiscriminator.QUERY]]
     # (Assigned during postprocessing) The `roleForestRoots` field in its final schema-compliant shape
     roleForestRoots: list[external_types.RoleName]
@@ -214,7 +214,7 @@ class IntermediateActionSelectorDefinition(IntermediateConstructDefinitionBase, 
 
     The shape captures the structure of action-selector definitions throughout postprocessing.
     """
-    # The discriminator for the action-selector construct
+    # The `type` field in its final schema-compliant shape
     type: Required[Literal[external_types.ConstructDiscriminator.ACTION_SELECTOR]]
     # (Assigned during postprocessing) The `initiator` field in its final schema-compliant shape
     initiator: NotRequired[external_types.RoleName]
@@ -237,7 +237,7 @@ class IntermediatePlanSelectorDefinition(IntermediateConstructDefinitionBase, to
 
     The shape captures the structure of plan-selector definitions throughout postprocessing.
     """
-    # The discriminator for the plan-selector construct
+    # The `type` field in its final schema-compliant shape
     type: Required[Literal[external_types.ConstructDiscriminator.PLAN_SELECTOR]]
     # (Assigned during postprocessing) The `roleForestRoots` field in its final schema-compliant shape
     roleForestRoots: list[external_types.RoleName]
@@ -256,7 +256,7 @@ class IntermediateSiftingPatternDefinition(IntermediateConstructDefinitionBase, 
 
     The shape captures the structure of sifting-pattern definitions throughout postprocessing.
     """
-    # The discriminator for the sifting-pattern construct
+    # The `type` field in its final schema-compliant shape
     type: Required[Literal[external_types.ConstructDiscriminator.SIFTING_PATTERN]]
     # (Assigned during postprocessing) The `roleForestRoots` field in its final schema-compliant shape
     roleForestRoots: list[external_types.RoleName]
@@ -273,7 +273,7 @@ class IntermediateTropeDefinition(IntermediateConstructDefinitionBase, total=Fal
 
     The shape captures the structure of trope definitions throughout postprocessing.
     """
-    # The discriminator for the trope construct
+    # The `type` field in its final schema-compliant shape
     type: Required[Literal[external_types.ConstructDiscriminator.TROPE]]
     # (Assigned during postprocessing) The `roleForestRoots` field in its final schema-compliant shape
     roleForestRoots: list[external_types.RoleName]

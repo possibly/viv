@@ -56,13 +56,12 @@ def main() -> None:
             if path_to_output_file.suffix.lower() == ".viv":
                 raise errors.VivCompileError(
                     f"Output path has a `.viv` extension, but the compiler emits JSON content "
-                    f"bundles, not Viv source. Refusing to overwrite what looks like a source "
-                    f"file: {path_to_output_file}"
+                    f"bundles, not Viv source. Please use a different extension."
                 )
             if args.input and path_to_output_file == Path(args.input).expanduser().resolve():
                 raise errors.VivCompileError(
                     f"Output path is the same as the input path: {path_to_output_file}. "
-                    f"Refusing to overwrite the source file."
+                    f"Please specify a different output path."
                 )
             if not path_to_output_file.parent.exists():
                 raise errors.VivCompileError(f"Output-file directory does not exist: {path_to_output_file.parent}")
@@ -217,7 +216,7 @@ def _print_versions() -> None:
 
 
 def _run_smoke_test() -> None:
-    """Runs a smoke test to confirm that the Viv compiler installation appears to be functioning.
+    """Run a smoke test to confirm that the Viv compiler installation appears to be functioning.
 
     Side Effects:
         The results are printed out to `stderr`.
@@ -230,7 +229,7 @@ def _run_smoke_test() -> None:
 
 
 def _invoke_compiler(*, args: argparse.Namespace) -> external_types.ContentBundle:
-    """Invokes the compiler on the user's specified source code, with their specified configuration settings.
+    """Invoke the compiler on the user's specified source code, with their specified configuration settings.
 
     The source code may be specified via a file path (via `--input`) or directly as a string (via `--string`).
 
@@ -318,7 +317,7 @@ def _emit_results(
     path_to_output_file: Path | None,
     quiet: bool = False
 ) -> None:
-    """Emits the compiled content bundle according to the user's specified output parameters.
+    """Emit the compiled content bundle according to the user's specified output parameters.
 
     Args:
         content_bundle: A compiled content bundle.
@@ -344,7 +343,7 @@ def _emit_results(
         if not quiet:
             print(_cyan(text=f"\n* Output{' (filtered)' if output_filter else ''}: \n"), file=sys.stderr)
         sys.stdout.write(f"{json.dumps(output, indent=2, sort_keys=True)}\n")
-    # If we're to list out the compiled actions, let's do so now. We'll only write to `stderr`,
+    # If we're to list out the compiled constructs, let's do so now. We'll only write to `stderr`,
     # since the API should be used if a user wants to programmatically gather this list.
     if args.list:
         _list_compiled_constructs(content_bundle=content_bundle)
@@ -384,7 +383,7 @@ def _resolve_output_filter_path(*, content_bundle: external_types.ContentBundle,
 
 
 def _list_compiled_constructs(*, content_bundle: external_types.ContentBundle) -> None:
-    """Logs all the constructs contained in the given compiled content bundle.
+    """Log all the constructs contained in the given compiled content bundle.
 
     Note: We only write to `stderr` here. The API should be used if a user wants
     to programmatically gather this list.

@@ -1,4 +1,4 @@
-"""Custom error classes containing detailed information about a compilation issue."""
+"""Custom error classes containing detailed information about a Viv compilation issue."""
 
 import textwrap
 from pathlib import Path

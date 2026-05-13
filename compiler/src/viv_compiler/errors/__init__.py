@@ -1,3 +1,3 @@
-"""Module that exposes our custom error classes."""
+"""Module that exposes the Viv compiler's custom error classes."""
 
 from .errors import *

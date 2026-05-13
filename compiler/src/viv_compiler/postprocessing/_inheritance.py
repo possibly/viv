@@ -22,30 +22,33 @@ def handle_inheritance(*, combined_ast: internal_types.CombinedAST) -> None:
 
     Returns:
         None (construct definitions are modified in place).
+
+    Raises:
+        VivCompileError: An inheritance cycle is detected.
     """
     validation.prevalidate_action_inheritance(combined_ast=combined_ast)
     intermediate_action_definitions = combined_ast["actions"]
-    outstanding_child_action_names = [action['name'] for action in combined_ast["actions"] if action['parent']]
+    outstanding_child_action_names = [action['name'] for action in combined_ast["actions"] if action['_parent']]
     while outstanding_child_action_names:
         made_progress = False
         for i, child_action_definition in enumerate(intermediate_action_definitions):
             child_action_definition: internal_types.IntermediateChildActionDefinition
             if child_action_definition['name'] not in outstanding_child_action_names:
                 continue
-            if child_action_definition['parent'] in outstanding_child_action_names:
+            if child_action_definition['_parent'] in outstanding_child_action_names:
                 # This action's parent itself has a parent, and so we need to wait for the parent
                 # to inherit its material first (and so on if there's further dependencies).
                 continue
             try:
                 parent_action_definition = next(
                     action for action in intermediate_action_definitions
-                    if action['name'] == child_action_definition['parent']
+                    if action['name'] == child_action_definition['_parent']
                 )
             except StopIteration:
                 raise errors.VivCompileError(
                     f"Action '{child_action_definition['name']}' declares undefined parent action "
-                    f"'{child_action_definition['parent']}'"
-                )
+                    f"'{child_action_definition['_parent']}'"
+                ) from None
             # Handle any join directives
             merged_action_definition = _merge_action_definitions(
                 child_action_definition=child_action_definition,
@@ -61,7 +64,7 @@ def handle_inheritance(*, combined_ast: internal_types.CombinedAST) -> None:
             intermediate_action_definitions[i] = merged_action_definition
             outstanding_child_action_names.remove(child_action_definition['name'])
             made_progress = True
-        # If we made no progress this pass, the remaining names participate in a cycle.
+        # If we made no progress this pass, the remaining actions participate in a cycle
         if not made_progress:
             cycle_actions = "'" + ", ".join(outstanding_child_action_names) + "'"
             raise errors.VivCompileError(f"Inheritance cycle detected among actions: {cycle_actions}")
@@ -74,7 +77,8 @@ def _merge_action_definitions(
     child_action_definition: internal_types.IntermediateChildActionDefinition,
     parent_action_definition: internal_types.IntermediateActionDefinition
 ) -> internal_types.IntermediateActionDefinition:
-    """Clone the given action definitions and return a merged one that honors the author's inheritance declarations.
+    """Return a merged action definition, from the given child and parent definitions, that honors
+    the author's inheritance declarations.
 
     Args:
         child_action_definition: The child action definition that will inherit from the given parent definition.
@@ -112,7 +116,7 @@ def _merge_action_definitions(
         name=child_action_definition["name"],
         _template=child_action_definition["_template"],
         reserved=child_action_definition["reserved"],
-        parent=None,  # Always `None` for an `IntermediateActionDefinition`, and eventually removed altogether
+        _parent=None,  # Always `None` for an `IntermediateActionDefinition`, and eventually removed altogether
         roles=merged_fields["roles"],
         importance=merged_fields["importance"],
         tags=merged_fields["tags"],

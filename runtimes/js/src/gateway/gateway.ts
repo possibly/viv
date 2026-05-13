@@ -32,8 +32,10 @@ export let GATEWAY: HostApplicationGateway;
 let ADAPTER: HostApplicationAdapter;
 
 /**
- * Creates (and exposes) the gateway to the Viv adapter for the host application at hand, making it accessible
- * to the runtime. The gateway populates config defaults and exposes gateway operations that are as optimized
+ * Creates (and exposes) the gateway to the Viv adapter for the host application at hand,
+ * making it accessible to the runtime.
+ *
+ * The gateway populates config defaults and exposes gateway operations that are as optimized
  * as possible given the fast paths included in the Viv adapter.
  *
  * @param adapter - The Viv adapter for the host application at hand, which will already have been validated.

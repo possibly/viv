@@ -50,9 +50,9 @@ def prevalidate_role_names(
 
 
 def prevalidate_construct_names(*, combined_ast: internal_types.CombinedAST) -> None:
-    """Ensure that there are no duplicate names among the units in the given combined AST.
+    """Ensure that there are no duplicate names among the constructs in the given combined AST.
 
-    More specifically, there must not be a duplicate name *within* a unit type. For example,
+    More specifically, there must not be a duplicate name *within* a construct type. For example,
     there may not be two actions with the same name, but it's fine for an action and a trope
     to share the same name.
 
@@ -132,7 +132,7 @@ def prevalidate_action_inheritance(*, combined_ast: internal_types.CombinedAST) 
         role_definitions = action_definition.get('roles', {}).values()
         for role_definition in role_definitions:
             if role_definition["renames"]:
-                if not action_definition["parent"]:
+                if not action_definition["_parent"]:
                     raise errors.VivCompileError(
                         f"Action '{action_definition['name']}' renames a role but declares no parent"
                     )

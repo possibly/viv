@@ -89,7 +89,7 @@ function getValidator<T>(key: string, schemaName: string): ValidateFunction<T> {
  * @param validator - The validator to use on the data.
  * @param subject - The {@link ValidationErrorSubject} at hand.
  * @returns If the data passes validation.
- * @throws If the data does not pass validation.
+ * @throws {VivValidationError} If the data does not pass validation.
  */
 export function validateAgainstSchema<T>(
     data: unknown,

@@ -1,4 +1,4 @@
-"""System configuration for the Viv DSL compiler.
+"""System configuration for the Viv compiler.
 
 Important: These settings are only meant to be modified in the course of system development, i.e.,
 by the compiler maintainers and not by end users. That said, certain user-supplied default values

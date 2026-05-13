@@ -219,7 +219,7 @@ export type ConstructSiftingMatchDiagramResult = string;
 export type GetDebuggingDataResult = VivInternalStateDebugging;
 
 /**
- * The supported Viv content-bundle schema version supported by this runtime,
+ * The Viv content-bundle schema version supported by this runtime,
  * which is a string in semver notation (e.g., `"1.0.16"`).
  *
  * @category Other
