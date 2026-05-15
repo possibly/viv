@@ -24,9 +24,9 @@ import {
  *     will result in precast bindings for the given construct.
  * @param context - A Viv evaluation context.
  * @returns Evaluated precast bindings for the given construct.
- * @throws {VivRoleCastingError} If an undefined role is precast.
- * @throws {VivRoleCastingError} If an invalid value is precast.
- * @throws {VivRoleCastingError} If an initiator is not precast for a construct requiring one.
+ * @throws {@link VivRoleCastingError} If an undefined role is precast.
+ * @throws {@link VivRoleCastingError} If an invalid value is precast.
+ * @throws {@link VivRoleCastingError} If an initiator is not precast for a construct requiring one.
  */
 export async function precastRoles(
     constructDefinition: ConstructDefinition,
@@ -126,11 +126,11 @@ export async function precastRoles(
  * @param candidatesPrecastForRole - The candidates precast for the given role.
  * @param allPrecastEntityIDs - Array containing entity IDs for all entities that have already been precast.
  * @returns Nothing, but only if validation passes.
- * @throws {VivRoleCastingError} If too many candidates are precast in a role.
- * @throws {VivRoleCastingError} If too few candidates are precast in a 'precast' role.
- * @throws {VivRoleCastingError} If a symbol candidate does not have a valid symbol type.
- * @throws {VivRoleCastingError} If an entity candidate does not have the right entity type.
- * @throws {VivRoleCastingError} If an entity is precast multiple times.
+ * @throws {@link VivRoleCastingError} If too many candidates are precast in a role.
+ * @throws {@link VivRoleCastingError} If too few candidates are precast in a 'precast' role.
+ * @throws {@link VivRoleCastingError} If a symbol candidate does not have a valid symbol type.
+ * @throws {@link VivRoleCastingError} If an entity candidate does not have the right entity type.
+ * @throws {@link VivRoleCastingError} If an entity is precast multiple times.
  */
 export async function validatePrecastRoleCandidates(
     constructDefinition: ConstructDefinition,
@@ -218,7 +218,7 @@ export async function validatePrecastRoleCandidates(
  * @param roleDefinition - Definition for the role in question.
  *     is associated, needed to throw an error.
  * @returns Whether the given entity fits the type specified by the given role's labels.
- * @throws {VivInternalError} If the role definition is malformed (defensive guard).
+ * @throws {@link VivInternalError} If the role definition is malformed (defensive guard).
  */
 export async function candidateEntityFitsRoleType(
     candidateEntityID: UID,
@@ -248,7 +248,7 @@ export async function candidateEntityFitsRoleType(
  * @param constructDefinition - Definition for the construct with which the given role is associated.
  * @param precastBindings - Final precast bindings for the given construct, which an author has marked complete.
  * @returns Nothing, but only if validation passes.
- * @throws {VivRoleCastingError} If the bindings are marked complete but fail to precast all required role slots.
+ * @throws {@link VivRoleCastingError} If the bindings are marked complete but fail to precast all required role slots.
  */
 export function validateCompletePrecastBindings(
     constructDefinition: ConstructDefinition,

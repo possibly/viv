@@ -27,7 +27,7 @@ import { prepareSearchDomain, setPredicateHolds } from "./utils";
  *     which must be loaded with precast bindings to facilitate evaluating the search-domain expression.
  * @param limit - The maximum number of query matches to return. This should be greater than or equal to one.
  * @returns An array containing IDs for all actions that match the query.
- * @throws {VivExecutionError} If the given query specifies `salience` and/or `associations` criteria,
+ * @throws {@link VivExecutionError} If the given query specifies `salience` and/or `associations` criteria,
  *     but the prepared search domain is not a character's memories.
  */
 export async function runActionSearch(
@@ -197,7 +197,7 @@ async function actionMatchesQuery(
  * @param numericRange - The numeric range to enforce.
  * @param evaluationContext - A Viv evaluation context.
  * @returns Whether the given action-field value falls within the given numeric range.
- * @throws {VivExecutionError} A bound on the numeric range does not evaluate to a number.
+ * @throws {@link VivExecutionError} A bound on the numeric range does not evaluate to a number.
  */
 async function testNumericCriterion(
     actionFieldValue: number,
@@ -252,7 +252,8 @@ async function testNumericCriterion(
  *     timestamp or time of day for the given action.
  * @param currentTimestamp - The current simulation timestamp, in story time.
  * @returns Whether the given action satisfies the given temporal criterion.
- * @throws {VivInternalError} The query has time-of-day criteria, but the action has no time of day (defensive guard).
+ * @throws {@link VivInternalError} The query has time-of-day criteria,
+ *     but the action has no time of day (defensive guard).
  */
 function testTemporalCriterion(
     actionData: ActionView,

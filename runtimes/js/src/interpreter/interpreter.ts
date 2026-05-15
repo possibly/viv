@@ -92,7 +92,7 @@ import {
  *     scratch code, gloss rendering, etc.) call the function with the default argument `false`, ensuring
  *     their loops and conditionals run to completion and execute all intended side effects.
  * @returns The evaluation of the given expression, given the associated context.
- * @throws {VivInterpreterError} If the expression has an invalid type.
+ * @throws {@link VivInterpreterError} If the expression has an invalid type.
  */
 export async function interpretExpression(
     expression: Expression,
@@ -289,7 +289,7 @@ async function evaluateActionRelation(
  * @param customFunctionCall - A Viv adapter-function call.
  * @param context - A Viv evaluation context.
  * @returns The result of the custom-function call.
- * @throws {VivInterpreterError} If the function call itself fails, in which case the downstream
+ * @throws {@link VivInterpreterError} If the function call itself fails, in which case the downstream
  *     error will bubble up into {@link VivInterpreterError.extraContext}.
  */
 async function evaluateCustomFunctionCall(
@@ -383,7 +383,7 @@ function evaluateChanceExpression(chance: number): boolean {
  * @param comparison - A Viv comparison.
  * @param context - A Viv evaluation context.
  * @returns The boolean result of the comparison.
- * @throws {VivInterpreterError} If the comparator is arithmetic and an evaluated operand is non-numeric.
+ * @throws {@link VivInterpreterError} If the comparator is arithmetic and an evaluated operand is non-numeric.
  */
 async function evaluateComparison(comparison: ComparisonValue, context: EvaluationContext): Promise<boolean> {
     // Evaluate the left and right operands
@@ -571,7 +571,7 @@ async function evaluateDisjunction(
  * @param entityReference - A Viv entity reference.
  * @param context - A Viv evaluation context.
  * @returns The evaluated reference.
- * @throws {VivInterpreterError} If the anchor is not an entity ID.
+ * @throws {@link VivInterpreterError} If the anchor is not an entity ID.
  */
 async function evaluateEntityReference(
     entityReference: ReferenceValue,
@@ -621,7 +621,7 @@ async function evaluateEntityReference(
  * @param symbolReference - A Viv symbol reference.
  * @param context - A Viv evaluation context.
  * @returns The evaluated reference.
- * @throws {VivInterpreterError} If the reference anchor is not defined.
+ * @throws {@link VivInterpreterError} If the reference anchor is not defined.
  */
 async function evaluateSymbolReference(
     symbolReference: ReferenceValue,
@@ -698,10 +698,10 @@ function unpackGroupRole(nameOfRoleToUnpack: RoleName, context: EvaluationContex
  * @returns The property value stored at the given path, if the path can be traversed, else an
  *     eval fail-safe sentinel, assuming the author placed one after the path segment from which
  *     navigation couldn't proceed (because it followed a missing property).
- * @throws {VivInterpreterError} If any intermediate point along the path results in a nullish value,
+ * @throws {@link VivInterpreterError} If any intermediate point along the path results in a nullish value,
  *     and if the author did not follow this point with an eval fail-safe marker. We throw here because
  *     the reference cannot be evaluated past that point).
- * @throws {VivInterpreterError} If the final result is `undefined`, because out of precaution Viv
+ * @throws {@link VivInterpreterError} If the final result is `undefined`, because out of precaution Viv
  *     does not allow users to set `undefined` values.
  */
 async function retrieveValueViaReferencePath(
@@ -784,9 +784,10 @@ async function retrieveValueViaReferencePath(
  * @param lookup - A Viv lookup.
  * @param context - A Viv evaluation context.
  * @returns The result of the lookup.
- * @throws {VivInterpreterError} If the given anchor is not an array or plain object.
- * @throws {VivInterpreterError} If index/key is invalid for the anchor type.
- * @throws {VivInterpreterError} If the lookup/access results in `undefined` and the lookup has no `failSafe` flag.
+ * @throws {@link VivInterpreterError} If the given anchor is not an array or plain object.
+ * @throws {@link VivInterpreterError} If index/key is invalid for the anchor type.
+ * @throws {@link VivInterpreterError} If the lookup/access results in `undefined`
+ *     and the lookup has no `failSafe` flag.
  */
 async function retrieveValueViaLookup(
     evaluatedAnchor: ExpressionValue,
@@ -855,7 +856,7 @@ async function retrieveValueViaLookup(
  *
  * @param enumExpression - A Viv enum.
  * @returns The enum value furnished by the host application.
- * @throws {VivInterpreterError} If the minus sign is used with a string enum.
+ * @throws {@link VivInterpreterError} If the minus sign is used with a string enum.
  */
 async function evaluateEnum(enumExpression: Enum["value"]): Promise<number|string> {
     // Retrieve the enum value. Because Viv already confirmed during initialization that each
@@ -881,7 +882,7 @@ async function evaluateEnum(enumExpression: Enum["value"]): Promise<number|strin
  * @param list - A Viv list.
  * @param context - A Viv evaluation context.
  * @returns The evaluated list.
- * @throws {VivInterpreterError} If any expression in the list evaluates to undefined.
+ * @throws {@link VivInterpreterError} If any expression in the list evaluates to undefined.
  */
 async function evaluateList(list: ListField["value"], context: EvaluationContext): Promise<ExpressionValue[]> {
     const evaluatedList: ExpressionValue[] = [];
@@ -914,8 +915,8 @@ async function evaluateList(list: ListField["value"], context: EvaluationContext
  *     the remainder of the iterations or branches are skipped. This lets the interpreter stop work the
  *     moment that, e.g., a condition fails.
  * @returns The evaluation of the last expression to appear in the evaluated body.
- * @throws {VivInterpreterError} If the loop iterable does not evaluate to an array.
- * @throws {VivInterpreterError} If the loop variable is marked entity but does not evaluate
+ * @throws {@link VivInterpreterError} If the loop iterable does not evaluate to an array.
+ * @throws {@link VivInterpreterError} If the loop variable is marked entity but does not evaluate
  *     to an entity on a given iteration.
  */
 async function evaluateLoop(
@@ -1021,7 +1022,7 @@ async function evaluateMembershipTest(
  * @param memoryCheck - A Viv memory check.
  * @param context - A Viv evaluation context.
  * @returns The boolean result of the memory check.
- * @throws {VivInterpreterError} If one or both operands do not evaluate to entities.
+ * @throws {@link VivInterpreterError} If one or both operands do not evaluate to entities.
  */
 async function evaluateMemoryCheck(memoryCheck: MemoryCheckValue, context: EvaluationContext): Promise<boolean> {
     // Evaluate the operands.
@@ -1293,8 +1294,8 @@ async function executeAssignment(assignment: AssignmentValue, context: Evaluatio
  * @param context - A Viv evaluation context.
  * @returns An object specifying the property to be updated by an assignment, if no eval fail-safe
  *     fired, else the eval fail-safe sentinel.
- * @throws {VivInterpreterError} If the assignment anchor should be an entity but is not.
- * @throws {VivInterpreterError} If a pointer cannot be dereferenced.
+ * @throws {@link VivInterpreterError} If the assignment anchor should be an entity but is not.
+ * @throws {@link VivInterpreterError} If a pointer cannot be dereferenced.
  */
 async function prepareAssignmentUpdateData(
     assignment: AssignmentValue,
@@ -1528,7 +1529,8 @@ function deriveUpdateValue(
  * @param inscription - A Viv inscription.
  * @param context - A Viv evaluation context.
  * @returns `true`.
- * @throws {VivInterpreterError} If the item and action operands do not evaluate to an item and an action respectively.
+ * @throws {@link VivInterpreterError} If the item and action operands do not evaluate
+ *     to an item and an action respectively.
  */
 async function executeInscription(inscription: InscriptionValue, context: EvaluationContext): Promise<true> {
     // Evaluate the operands
@@ -1585,7 +1587,7 @@ async function executeInscription(inscription: InscriptionValue, context: Evalua
  * @param inspection - A Viv inspection.
  * @param context - A Viv evaluation context.
  * @returns `true`.
- * @throws {VivInterpreterError} If the character and item operands do not evaluate to a character
+ * @throws {@link VivInterpreterError} If the character and item operands do not evaluate to a character
  *     and an item respectively.
  */
 async function executeInspection(inspection: InspectionValue, context: EvaluationContext): Promise<true> {

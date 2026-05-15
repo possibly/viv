@@ -20,7 +20,8 @@ import { dehydrateEntityReference, isEntityView } from "../utils";
  * @param searchDomainDeclaration - A declaration for how to construct the search domain.
  * @param enclosingEvaluationContext - The Viv evaluation context for the closure containing a search expression.
  * @returns A prepared search domain.
- * @throws {VivInternalError} If the declaration specifies an unsupported domain-preparation policy (defensive guard).
+ * @throws {@link VivInternalError} If the declaration specifies
+ *     an unsupported domain-preparation policy (defensive guard).
  */
 export async function prepareSearchDomain(
     searchDomainDeclaration: SearchDomainDeclaration,
@@ -46,7 +47,7 @@ export async function prepareSearchDomain(
  *
  * @param enclosingEvaluationContext - The Viv evaluation context for the closure containing a search expression.
  * @returns The search domain in the enclosing evaluation context.
- * @throws {VivInternalError} If there is no enclosing domain (defensive guard).
+ * @throws {@link VivInternalError} If there is no enclosing domain (defensive guard).
  */
 function prepareInheritedSearchDomain(enclosingEvaluationContext: EvaluationContext): SearchDomain {
     if (!enclosingEvaluationContext.__searchDomain__) {
@@ -62,7 +63,7 @@ function prepareInheritedSearchDomain(enclosingEvaluationContext: EvaluationCont
  *
  * @param enclosingEvaluationContext - The Viv evaluation context for the closure containing a search expression.
  * @returns A search domain covering the full chronicle.
- * @throws {VivInternalError} If there is an enclosing domain (defensive guard).
+ * @throws {@link VivInternalError} If there is an enclosing domain (defensive guard).
  */
 async function prepareChronicleSearchDomain(enclosingEvaluationContext: EvaluationContext): Promise<SearchDomain> {
     if (enclosingEvaluationContext.__searchDomain__) {
@@ -91,7 +92,7 @@ async function prepareChronicleSearchDomain(enclosingEvaluationContext: Evaluati
  * @param searchDomainDeclaration - A declaration for how to construct the search domain.
  * @param enclosingEvaluationContext - The Viv evaluation context for the closure containing a search expression.
  * @returns A search domain narrowed to a specified character's memories.
- * @throws {VivExecutionError} If the search-domain expression does not evaluate to an entity ID for a character.
+ * @throws {@link VivExecutionError} If the search-domain expression does not evaluate to an entity ID for a character.
  */
 async function prepareCustomSearchDomain(
     searchDomainDeclaration: SearchDomainDeclaration,
@@ -142,7 +143,7 @@ async function prepareCustomSearchDomain(
  *     the set associated with the predicate.
  * @param evaluationContext - A Viv evaluation context.
  * @returns Whether the given set predicate holds with regard to the given action-field set.
- * @throws {VivInternalError} If the set-predicate operator is invalid (defensive guard).
+ * @throws {@link VivInternalError} If the set-predicate operator is invalid (defensive guard).
  */
 export async function setPredicateHolds(
     candidateFieldValue: ExpressionValue[],

@@ -33,8 +33,8 @@ import { isPlainObject, isString } from "./general-utils";
  * @param constructType - The type of construct whose definition is to be furnished.
  * @param constructName - The name of the construct whose definition is to be furnished.
  * @returns The requested construct definition.
- * @throws {VivInternalError} If `constructType` is invalid (defensive guard).
- * @throws {VivExecutionError} If there is no such defined construct in the content bundle.
+ * @throws {@link VivInternalError} If `constructType` is invalid (defensive guard).
+ * @throws {@link VivExecutionError} If there is no such defined construct in the content bundle.
  */
 export function getConstructDefinition(
     constructType: ConstructDiscriminator,
@@ -79,7 +79,7 @@ export function getConstructDefinition(
  *
  * @param actionName - The name of the action whose definition is to be furnished.
  * @returns The definition for the action with the given name.
- * @throws {VivExecutionError} If there is no defined action by the given name in the content bundle.
+ * @throws {@link VivExecutionError} If there is no defined action by the given name in the content bundle.
  */
 export function getActionDefinition(actionName: ActionName): ActionDefinition {
     const actionDefinition = CONTENT_BUNDLE.actions[actionName];
@@ -94,7 +94,7 @@ export function getActionDefinition(actionName: ActionName): ActionDefinition {
  *
  * @param actionSelectorName - The name of the action selector whose definition is to be furnished.
  * @returns The definition for the action selector with the given name.
- * @throws {VivExecutionError} If there is no defined action selector by the given name in the content bundle.
+ * @throws {@link VivExecutionError} If there is no defined action selector by the given name in the content bundle.
  */
 export function getActionSelectorDefinition(
     actionSelectorName: SelectorName
@@ -113,7 +113,7 @@ export function getActionSelectorDefinition(
  *
  * @param planName - The name of the plan whose definition is to be furnished.
  * @returns The definition for the plan with the given name.
- * @throws {VivExecutionError} If there is no defined plan by the given name in the content bundle.
+ * @throws {@link VivExecutionError} If there is no defined plan by the given name in the content bundle.
  */
 export function getPlanDefinition(planName: PlanName): PlanDefinition {
     const planDefinition = CONTENT_BUNDLE.plans[planName];
@@ -128,7 +128,7 @@ export function getPlanDefinition(planName: PlanName): PlanDefinition {
  *
  * @param planSelectorName - The name of the plan selector whose definition is to be furnished.
  * @returns The definition for the plan selector with the given name.
- * @throws {VivExecutionError} If there is no defined plan selector by the given name in the content bundle.
+ * @throws {@link VivExecutionError} If there is no defined plan selector by the given name in the content bundle.
  */
 export function getPlanSelectorDefinition(
     planSelectorName: SelectorName
@@ -147,7 +147,7 @@ export function getPlanSelectorDefinition(
  *
  * @param queryName - The name of the query whose definition is to be furnished.
  * @returns The definition for the query with the given name.
- * @throws {VivExecutionError} If there is no defined query by the given name in the content bundle.
+ * @throws {@link VivExecutionError} If there is no defined query by the given name in the content bundle.
  */
 export function getQueryDefinition(queryName: QueryName): QueryDefinition {
     const queryDefinition = CONTENT_BUNDLE.queries[queryName];
@@ -162,7 +162,7 @@ export function getQueryDefinition(queryName: QueryName): QueryDefinition {
  *
  * @param siftingPatternName - The name of the sifting pattern whose definition is to be furnished.
  * @returns The definition for the sifting pattern with the given name.
- * @throws {VivExecutionError} If there is no defined sifting pattern by the given name in the content bundle.
+ * @throws {@link VivExecutionError} If there is no defined sifting pattern by the given name in the content bundle.
  */
 export function getSiftingPatternDefinition(
     siftingPatternName: SiftingPatternName
@@ -181,7 +181,7 @@ export function getSiftingPatternDefinition(
  *
  * @param tropeName - The name of the trope whose definition is to be furnished.
  * @returns The definition for the trope with the given name.
- * @throws {VivExecutionError} If there is no defined trope by the given name in the content bundle.
+ * @throws {@link VivExecutionError} If there is no defined trope by the given name in the content bundle.
  */
 export function getTropeDefinition(tropeName: TropeName): TropeDefinition {
     const tropeDefinition = CONTENT_BUNDLE.tropes[tropeName];
@@ -198,7 +198,7 @@ export function getTropeDefinition(tropeName: TropeName): TropeDefinition {
  *     the role in question is associated.
  * @param roleName - The name of the role whose definition is to be furnished.
  * @returns The definition for the role with the given name in the given construct definition.
- * @throws {VivExecutionError} If there is no role by the given name in the given construct definition.
+ * @throws {@link VivExecutionError} If there is no role by the given name in the given construct definition.
  */
 export function getRoleDefinition(
     constructDefinition: ConstructDefinition,
@@ -260,7 +260,7 @@ export async function isEntityOfType(
  * @param entityID - Entity ID for the entity whose entity view is to be returned.
  * @param expectedType - The {@link EntityType} discriminator expected for the entity.
  * @returns The requested entity view, narrowed to the expected type.
- * @throws {VivExecutionError} If the retrieved entity does not have the expected entity type.
+ * @throws {@link VivExecutionError} If the retrieved entity does not have the expected entity type.
  */
 async function getEntityViewOfType<T extends EntityView>(entityID: UID, expectedType: T["entityType"]): Promise<T> {
     const data = await GATEWAY.getEntityView(entityID);
@@ -369,7 +369,8 @@ export async function hydrateEntityReference(expressionValue: ExpressionValue): 
  * and an `id` property, it's almost certainly a Viv entity.
  *
  * @param expressionValue - A value produced by the Viv interpreter evaluating a Viv expression.
- * @returns Whether the value is a plain object with both an `entityType` property and an `id` property of type `"string"`.
+ * @returns Whether the value is a plain object with both an `entityType` property and
+ *     an `id` property of type `"string"`.
  */
 export function isEntityView(expressionValue: unknown): expressionValue is EntityView {
     if (isPlainObject(expressionValue)) {

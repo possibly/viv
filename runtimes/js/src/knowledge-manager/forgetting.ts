@@ -11,7 +11,7 @@ import { getCharacterData } from "../utils";
  * that has passed since last invocation of this procedure (and the configured rate of forgetting).
  *
  * @returns Nothing.
- * @throws {VivExecutionError} If story time moved backward since the last memory fade.
+ * @throws {@link VivExecutionError} If story time moved backward since the last memory fade.
  */
 export async function fadeMemories(): Promise<void> {
     // Determine the fade multiplier. If we have never faded before, we'll treat the beginning
@@ -45,7 +45,7 @@ export async function fadeMemories(): Promise<void> {
  * @param lastMemoryDecayTimestamp - The story-time timestamp when memory decay was last carried out.
  * @param currentTimestamp - The current story-time timestamp.
  * @returns Nothing.
- * @throws {VivExecutionError} If a character memory has a formation timestamp in the future.
+ * @throws {@link VivExecutionError} If a character memory has a formation timestamp in the future.
  */
 async function fadeMemoriesForCharacter(
     characterID: UID,

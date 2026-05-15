@@ -42,8 +42,8 @@ function getRoleForEntity(bindings: RoleBindings, entityID: UID): RoleName | und
  * @param postHoc - Whether we're computing a salience increment for an action that was already performed,
  *     potentially long ago, in which case we'll cast the given character in the special `hearer` role.
  * @returns A numeric salience increment for the given character, with regard to the given action.
- * @throws {VivExecutionError} If a per-role salience expression evaluates to a non-numeric value.
- * @throws {VivExecutionError} If the default salience expression evaluates to a non-numeric value.
+ * @throws {@link VivExecutionError} If a per-role salience expression evaluates to a non-numeric value.
+ * @throws {@link VivExecutionError} If the default salience expression evaluates to a non-numeric value.
  */
 export async function computeSalienceIncrement(
     characterID: UID,
@@ -118,8 +118,8 @@ export async function computeSalienceIncrement(
  * @param context - A Viv evaluation context.
  * @param postHoc - Whether we're computing (new) associations for an action that was already performed,
  *     potentially long ago, in which case we'll cast the given character in the special `hearer` role.
- * @throws {VivExecutionError} If a per-role associations expression does not evaluate to a string array.
- * @throws {VivExecutionError} If the default associations expression does not evaluate to a string array.
+ * @throws {@link VivExecutionError} If a per-role associations expression does not evaluate to a string array.
+ * @throws {@link VivExecutionError} If the default associations expression does not evaluate to a string array.
  * @returns An array of subjective associations for the given character, with regard to the given action.
  */
 export async function computeAssociations(

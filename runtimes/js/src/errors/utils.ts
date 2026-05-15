@@ -6,7 +6,7 @@ import { VivInternalError } from "./errors";
  *
  * @param constructType - The construct type in question.
  * @returns A label for the given construct type.
- * @throws {VivInternalError} If the construct type is invalid (defensive guard).
+ * @throws {@link VivInternalError} If the construct type is invalid (defensive guard).
  */
 export function getConstructLabel(constructType: ConstructDiscriminator): string {
     switch (constructType) {

@@ -65,7 +65,7 @@ import { SpecialRoleName } from "./constants";
  *     pattern whereby characters target urgent actions once a timestep has otherwise completed, to
  *     allow for emergent sequences to fully play out.
  * @returns If an action is performed, its entity ID, else `null`.
- * @throws {VivInternalError} If a queued construct has an unexpected type (defensive guard).
+ * @throws {@link VivInternalError} If a queued construct has an unexpected type (defensive guard).
  */
 export async function selectAction(initiatorID: UID, urgentOnly: boolean): Promise<UID | null> {
     // We'll commence by retrieving the initiator's data and preparing an initiator-level cache,
@@ -340,7 +340,7 @@ async function queuedActionSpatioTemporalConstraintsViolated(
  * @param queuedAction - A Viv queued action or queued action selector.
  * @param initiatorLevelCache - An initiator-level cache.
  * @returns Whether the queued action's precast entities for roles requiring presence are not co-located right now.
- * @throws {VivRoleCastingError} If the queued action precasts a non-entity in an entity role.
+ * @throws {@link VivRoleCastingError} If the queued action precasts a non-entity in an entity role.
  */
 async function queuedActionRequiredPresentEntitiesNotCoLocated(
     queuedAction: QueuedAction | QueuedActionSelector,
@@ -571,7 +571,7 @@ async function embargoProhibitsBindings(
  *
  * @param initiatorLevelCache - An initiator-level cache.
  * @returns If an action is performed, its entity ID, else `null`.
- * @throws {VivInternalError} If an unexpected construct type is encountered (defensive guard).
+ * @throws {@link VivInternalError} If an unexpected construct type is encountered (defensive guard).
  */
 async function targetGeneralAction(initiatorLevelCache: InitiatorLevelCache): Promise<UID | null> {
     // Load action and action-selector definitions, but discard any `reserved` ones, since they
@@ -657,8 +657,8 @@ async function targetGeneralAction(initiatorLevelCache: InitiatorLevelCache): Pr
  * @param suppressConditions - Whether to ignore the action conditions during role casting. This supports
  *     the public API function {@link attemptActionAPI}, which allows callers to effectively force an action.
  * @returns - {@link RoleCastingResult}
- * @throws {VivRoleCastingError} If the initiator role is not precast.
- * @throws {VivRoleCastingError} If the initiator role is precast with someone other than the initiator at hand.
+ * @throws {@link VivRoleCastingError} If the initiator role is not precast.
+ * @throws {@link VivRoleCastingError} If the initiator role is precast with someone other than the initiator at hand.
  */
 export async function targetAction(
     actionDefinition: ActionDefinition,
@@ -732,8 +732,8 @@ export async function targetAction(
  * @param initiatorLevelCache - An initiator-level cache.
  * @param source - How this action selector entered the targeting pipeline. Defaults to `"general"`.
  * @returns {@link SelectorResult}
- * @throws {VivRoleCastingError} If the initiator role is not precast.
- * @throws {VivRoleCastingError} If the initiator role is precast with someone other than the initiator at hand.
+ * @throws {@link VivRoleCastingError} If the initiator role is not precast.
+ * @throws {@link VivRoleCastingError} If the initiator role is precast with someone other than the initiator at hand.
  */
 async function targetActionSelector(
     actionSelectorDefinition: ActionSelectorDefinition,
@@ -864,8 +864,8 @@ async function performAction(
  * @param evaluationContext - The Viv evaluation context in its final state following role casting.
  * @return Nothing. All new entities are created via side effects and the bindings and evaluation
  *     context are mutated in place.
- * @throws {VivInternalError} If the spawn role has anything but `{min: 1, max: 1}` (defensive guard).
- * @throws {VivRoleCastingError} If the spawn function does not return an entity ID.
+ * @throws {@link VivInternalError} If the spawn role has anything but `{min: 1, max: 1}` (defensive guard).
+ * @throws {@link VivRoleCastingError} If the spawn function does not return an entity ID.
  */
 async function spawnEntities(
     actionDefinition: ActionDefinition,
@@ -972,7 +972,7 @@ function compileActionCauses(
  * @param actionID - Entity ID for the action.
  * @param causes - Array containing entity IDs for all actions that directly caused the one that is being performed.
  * @returns An action view.
- * @throws {VivExecutionError} If the action importance expression evaluates to a non-numeric value.
+ * @throws {@link VivExecutionError} If the action importance expression evaluates to a non-numeric value.
  */
 async function constructActionData(
     actionDefinition: ActionDefinition,

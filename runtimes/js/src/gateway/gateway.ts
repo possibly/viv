@@ -187,8 +187,9 @@ function initializeVivInternalState(): VivInternalState {
 /**
  * Gateway operation corresponding to {@link HostApplicationAdapter.updateEntityProperty}.
  *
- * @throws {VivInternalError} If the adapter does not implement {@link HostApplicationAdapter.updateEntityProperty},
- *     but this should have already been confirmed during adapter registration (defensive guard, as such).
+ * @throws {@link VivInternalError} If the adapter does not implement
+ *     {@link HostApplicationAdapter.updateEntityProperty}, but this should have already been
+ *     confirmed during adapter registration (defensive guard, as such).
  */
 async function updateEntityProperty(
     entityID: UID,
@@ -432,7 +433,7 @@ async function getItemInscriptions(itemID: UID): Promise<UID[]> {
 /**
  * Gateway operation corresponding to {@link HostApplicationAdapterFastPaths.appendEntityProperty}.
  *
- * @throws {VivExecutionError} If the property is not an array.
+ * @throws {@link VivExecutionError} If the property is not an array.
  */
 async function appendEntityProperty(
     entityID: UID,
@@ -474,7 +475,7 @@ async function appendEntityProperty(
 /**
  * Gateway operation corresponding to {@link HostApplicationAdapterFastPaths.getEntityProperty}.
  *
- * @throws {VivExecutionError} If the property is undefined.
+ * @throws {@link VivExecutionError} If the property is undefined.
  */
 async function getEntityProperty(entityID: UID, propertyPath: (string | number)[]): Promise<any> {
     if (ADAPTER.fastPaths?.getEntityProperty) {

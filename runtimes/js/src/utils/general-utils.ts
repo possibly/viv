@@ -83,8 +83,8 @@ export function shuffle<T>(array: T[]): void {
  * @param weights The non-negative weights associated with the items, such that, for any index `i`,
  *     `weights[i]` stores the weight for `items[i]`.
  * @returns A weighted-random permutation of the given items.
- * @throws {VivInternalError} If there is not the same number of items and weights (defensive guard).
- * @throws {VivInternalError} If an item has a negative weight (defensive guard).
+ * @throws {@link VivInternalError} If there is not the same number of items and weights (defensive guard).
+ * @throws {@link VivInternalError} If an item has a negative weight (defensive guard).
  */
 export function weightedShuffle<T>(items: readonly T[], weights: readonly number[]): T[] {
     // Apply the Gumbel-Max trick

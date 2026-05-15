@@ -36,7 +36,7 @@ let VIV_IS_INITIALIZED = false;
  * ```
  * @param args - See {@link InitializeVivRuntimeArgs}.
  * @returns - See {@link InitializeVivRuntimeResult}.
- * @throws {VivValidationError} If the given content bundle and adapter do not pass validation. In cases
+ * @throws {@link VivValidationError} If the given content bundle and adapter do not pass validation. In cases
  *     of multiple structural issues, only the first will be reported (to keep error messages manageable).
  */
 export function initializeVivRuntimeAPI(args: InitializeVivRuntimeArgs): InitializeVivRuntimeResult {

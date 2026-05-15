@@ -90,9 +90,10 @@ export async function targetSelector(
  * @param evaluationContext - The evaluation context produced during role casting for the selector itself,
  *     which may be needed to evaluate the expressions that derive candidate weights (as applicable).
  * @returns An array containing the given selector's candidates, sorted according to its sort policy.
- * @throws {VivInternalError} If the selector has an unexpected sort policy.
- * @throws {VivInternalError} If the selector uses the weighted-random policy but not all candidates have weights.
- * @throws {VivExecutionError} If a candidate weight does not evaluate to a positive number.
+ * @throws {@link VivInternalError} If the selector has an unexpected sort policy.
+ * @throws {@link VivInternalError} If the selector uses the weighted-random policy but not all
+ *     candidates have weights.
+ * @throws {@link VivExecutionError} If a candidate weight does not evaluate to a positive number.
  */
 async function sortSelectorCandidates(
     selectorDefinition: ActionSelectorDefinition | PlanSelectorDefinition,
@@ -141,8 +142,8 @@ async function sortSelectorCandidates(
  * @param actionTargetingEventSource - If the candidate is an action, how it entered the targeting pipeline.
  * @returns An object containing the name of an action or plan successfully targeted via the candidate, if any,
  *     as well as role-casting data associated with the targeting. See {@link SelectorResult} for more details.
- * @throws {VivInternalError} If the candidate is an action selector and the `initiatorLevelCache` argument
- *     is missing (defensive guard).
+ * @throws {@link VivInternalError} If the candidate is an action selector and the `initiatorLevelCache`
+ *     argument is missing (defensive guard).
  */
 async function targetSelectorCandidate(
     selectorDefinition: ActionSelectorDefinition | PlanSelectorDefinition,

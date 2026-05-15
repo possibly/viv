@@ -36,9 +36,9 @@ export interface QueuedConstructBase {
      */
     readonly constructName: ActionName | PlanName | SelectorName;
     /**
-     * A unique identifier for the queued construct, provisioned by the host application via a call to
-     * the {@link HostApplicationAdapter.provisionActionID} adapter function. Should an actual action be performed or an actual
-     * plan be launched, the resulting action or plan will take on this UID.
+     * A unique identifier for the queued construct, provisioned by the host application via a call to the
+     * {@link HostApplicationAdapter.provisionActionID} adapter function. Should an actual action be performed
+     * or an actual plan be launched, the resulting action or plan will take on this UID.
      */
     readonly id: UID;
     /**

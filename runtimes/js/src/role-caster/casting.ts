@@ -218,7 +218,7 @@ async function globalConditionsHold(roleCastingData: RoleCastingData): Promise<b
  * @param fillingOptionalSlots - Whether we are currently filling optional role slots, meaning slots beyond
  *     the minimum required number specified in the role definition.
  * @returns Updated bindings, if casting succeeds, else `null`.
- * @throws {VivInternalError} If the role-casting data becomes malformed (defensive guard).
+ * @throws {@link VivInternalError} If the role-casting data becomes malformed (defensive guard).
  */
 async function castRole(
     roleCastingData: RoleCastingData,
@@ -712,7 +712,7 @@ async function quorumFailsRoleConditions(
  * @param roleCastingData - An object containing various data associated with the current targeting instance.
  * @param roleName - Name of the role we are attempting to cast.
  * @returns The pool of possible candidates to consider for the given role. This is a shuffled, deduplicated copy.
- * @throws {VivInternalError} If a pool directive is required for the role but not present (defensive guard).
+ * @throws {@link VivInternalError} If a pool directive is required for the role but not present (defensive guard).
  */
 async function getCastingPoolForRole(
     roleCastingData: RoleCastingData,
@@ -762,7 +762,7 @@ async function getCastingPoolForRole(
  * @param roleCastingData - An object containing various data associated with the current targeting instance.
  * @param roleDefinition - Definition for the role associated with this casting pool.
  * @returns The custom casting pool for the given role.
- * @throws {VivRoleCastingError} If the evaluated pool is not an array.
+ * @throws {@link VivRoleCastingError} If the evaluated pool is not an array.
  */
 async function getCustomPool(
     roleCastingData: RoleCastingData,
@@ -818,10 +818,10 @@ async function getCustomPool(
  * @param roleDefinition - Definition for the role we are attempting to cast.
  * @param pool - The evaluated casting pool to validate.
  * @returns Nothing. Only returns if the pool passes validation.
- * @throws {VivRoleCastingError} If the pool is not an array.
- * @throws {VivRoleCastingError} If the pool contains a nullish value.
- * @throws {VivRoleCastingError} If the pool contains an invalid type for a symbol role.
- * @throws {VivRoleCastingError} If the pool contains a non-string value for an entity role.
+ * @throws {@link VivRoleCastingError} If the pool is not an array.
+ * @throws {@link VivRoleCastingError} If the pool contains a nullish value.
+ * @throws {@link VivRoleCastingError} If the pool contains an invalid type for a symbol role.
+ * @throws {@link VivRoleCastingError} If the pool contains a non-string value for an entity role.
  */
 function assertValidCastingPoolForRole(
     constructDefinition: ConstructDefinition,
@@ -1164,7 +1164,7 @@ function candidateIsBoundToOtherRole(
  *     currently under consideration for the given role.
  * @param roleName - Name of the role we are attempting to cast.
  * @returns Whether we have a case of a non-present candidate being considered for a role requiring a present entity.
- * @throws {VivRoleCastingError} If the given role is a non-symbol role but the given candidate is not an entity.
+ * @throws {@link VivRoleCastingError} If the given role is a non-symbol role but the given candidate is not an entity.
  */
 async function candidateIsNotPresentForPresentRole(
     roleCastingData: RoleCastingData,
@@ -1291,7 +1291,7 @@ async function candidateInRoleWouldViolateEmbargo(
  *     currently under consideration for the given role.
  * @param roleName - Name of the role we are attempting to cast.
  * @returns Whether the conditions for the given role failed for the given candidate and current bindings.
- * @throws {VivInternalError} If the evaluation context is malformed (defensive guard).
+ * @throws {@link VivInternalError} If the evaluation context is malformed (defensive guard).
  */
 async function candidateFailsRoleConditions(
     roleCastingData: RoleCastingData,

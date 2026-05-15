@@ -71,7 +71,7 @@ export const SCHEMA_VALIDATORS: SchemaValidators = {
  * @param key - The schema key associated with the schema component for which a validator will be prepared.
  * @param schemaName - The name of the schema for which a validator is to be furnished.
  * @returns A prepared validator.
- * @throws {VivInternalError} If the schema is missing (defensive guard).
+ * @throws {@link VivInternalError} If the schema is missing (defensive guard).
  */
 function getValidator<T>(key: string, schemaName: string): ValidateFunction<T> {
     const validator = ajv.getSchema(`${schemaName}#/definitions/${key}`);
@@ -89,7 +89,7 @@ function getValidator<T>(key: string, schemaName: string): ValidateFunction<T> {
  * @param validator - The validator to use on the data.
  * @param subject - The {@link ValidationErrorSubject} at hand.
  * @returns If the data passes validation.
- * @throws {VivValidationError} If the data does not pass validation.
+ * @throws {@link VivValidationError} If the data does not pass validation.
  */
 export function validateAgainstSchema<T>(
     data: unknown,

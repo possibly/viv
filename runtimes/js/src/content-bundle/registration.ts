@@ -29,7 +29,7 @@ export function setContentBundle(contentBundle: unknown): void {
  *
  * @param contentBundle - The Viv compiled content bundle whose shape will be checked.
  * @returns If the shape passes, the given content bundle, cast in the proper type.
- * @throws {VivValidationError} If the given content bundle does not have the expected shape.
+ * @throws {@link VivValidationError} If the given content bundle does not have the expected shape.
  */
 function assertContentBundle(contentBundle: unknown): asserts contentBundle is ContentBundle {
     validateAgainstSchema<ContentBundle>(
@@ -48,8 +48,8 @@ function assertContentBundle(contentBundle: unknown): asserts contentBundle is C
  *
  * @param contentBundle - The content bundle whose compatibility will be checked.
  * @returns Only if the content bundle is compatible.
- * @throws {VivValidationError} If the content bundle has an invalid schema version.
- * @throws {VivValidationError} If the content bundle's schema version is incompatible with the runtime's.
+ * @throws {@link VivValidationError} If the content bundle has an invalid schema version.
+ * @throws {@link VivValidationError} If the content bundle's schema version is incompatible with the runtime's.
  */
 export function assertCompatibleContentBundle(contentBundle: ContentBundle): void {
     const runtimeVersion = getSchemaVersion();

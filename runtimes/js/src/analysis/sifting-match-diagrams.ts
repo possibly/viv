@@ -1122,12 +1122,12 @@ function renderLegend(legend: readonly [string, UID][], ansi: boolean): string {
         `${shortID.padEnd(maxShortIDWidth)} ${styled(":", TREE_FRAME_STYLE, ansi)} ${uid}`
     );
     // Draw a box around the rows
-    const unstyledRowWidth = Math.max(...legend.map(([shortID, uid]) =>
+    const unstyledRowWidth = Math.max(...legend.map(([_shortID, uid]) =>
         maxShortIDWidth + 3 + uid.length
     ));
     const top = "\u250C\u2500" + "\u2500".repeat(unstyledRowWidth) + "\u2500\u2510";
     const bottom = "\u2514\u2500" + "\u2500".repeat(unstyledRowWidth) + "\u2500\u2518";
-    const boxedRows = legend.map(([shortID, uid], i) => {
+    const boxedRows = legend.map(([_shortID, uid], i) => {
         const unstyledLength = maxShortIDWidth + 3 + uid.length;
         const padding = " ".repeat(unstyledRowWidth - unstyledLength);
         return styled("\u2502", TREE_FRAME_STYLE, ansi) + " " + rows[i] + padding

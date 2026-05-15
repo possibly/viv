@@ -79,7 +79,7 @@ export async function recordBacktrackingReason(
  * @param condition - The Viv expression constituting the condition that was tested.
  * @param succeeded - Whether the condition succeeded, i.e., produced a truthy value when tested.
  * @returns Nothing. The test result is recorded via side effects.
- * @throws {VivInternalError} The condition does not have source-code annotations (defensive guard).
+ * @throws {@link VivInternalError} The condition does not have source-code annotations (defensive guard).
  */
 export async function recordConditionTestResult(
     constructDefinition: ConstructDefinition,
@@ -115,7 +115,7 @@ export async function recordConditionTestResult(
  * @param operation - A function that, when applied to the watched-construct state for
  *     the given construct, carries out a particular debugging operation.
  * @returns Nothing. Updates the Viv internal state accordingly.
- * @throws {VivInternalError} The construct has an invalid type (defensive guard).
+ * @throws {@link VivInternalError} The construct has an invalid type (defensive guard).
  */
 async function updateWatchedConstructState(
     constructDefinition: ConstructDefinition,
@@ -167,7 +167,7 @@ async function updateWatchedConstructState(
  *
  * @param constructDefinition - The construct in question.
  * @returns Whether the given construct is on the watchlist.
- * @throws {VivInternalError} The construct has an invalid type (defensive guard).
+ * @throws {@link VivInternalError} The construct has an invalid type (defensive guard).
  */
 function isWatchedConstruct(constructDefinition: ConstructDefinition): boolean {
     const watchlists = GATEWAY.debug?.watchlists;

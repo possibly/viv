@@ -140,8 +140,8 @@ async function queueAction(
  * @param reactionDeclaration - The Viv reaction declaration resulting in this queueing.
  * @param enclosingEvaluationContext - The Viv evaluation context for the closure containing the given reaction.
  * @returns An object containing only the required fields of a queued action.
- * @throws {VivInternalError} If the reaction does not have a priority (defensive guard).
- * @throws {VivExecutionError} If the reaction priority evaluates to a non-numeric value.
+ * @throws {@link VivInternalError} If the reaction does not have a priority (defensive guard).
+ * @throws {@link VivExecutionError} If the reaction priority evaluates to a non-numeric value.
  */
 async function deriveQueuedActionRequiredFields(
     actionDefinition: ActionDefinition | ActionSelectorDefinition,
@@ -301,7 +301,7 @@ async function deriveQueuedActionOptionalFields(
  * @param reactionDeclaration - A Viv reaction.
  * @param enclosingEvaluationContext - The Viv evaluation context for the closure containing the given reaction.
  * @returns Prepared abandonment conditions, including an evaluation context.
- * @throws {VivInternalError} Reaction does not have abandonment conditions (defensive guard).
+ * @throws {@link VivInternalError} Reaction does not have abandonment conditions (defensive guard).
  */
 export async function prepareAbandonmentConditions(
     reactionDeclaration: ReactionValue,
@@ -328,7 +328,7 @@ export async function prepareAbandonmentConditions(
  * @param reactionDeclaration - A Viv reaction.
  * @param enclosingEvaluationContext - The Viv evaluation context for the closure containing the given reaction.
  * @returns Prepared repeat logic, including an evaluation context.
- * @throws {VivInternalError} If the reaction does not have repeat logic (defensive guard).
+ * @throws {@link VivInternalError} If the reaction does not have repeat logic (defensive guard).
  */
 async function prepareRepeatLogic(
     reactionDeclaration: ReactionValue,
@@ -359,7 +359,7 @@ async function prepareRepeatLogic(
  *     The only case where a reaction has no causes is when a plan is forcibly queued, via {@link forciblyQueuePlan},
  *     with no causes. In normal operation, every reaction will have a cause attributed.
  * @returns Temporal constraints grounded in story time.
- * @throws {VivInternalError} If `primaryCauseID` is `null`, but one of the temporal constraints
+ * @throws {@link VivInternalError} If `primaryCauseID` is `null`, but one of the temporal constraints
  *     specifies `useActionTimestamp` (defensive guard).
  */
 async function groundQueuedActionTemporalConstraints(
@@ -692,7 +692,7 @@ export async function repeatConditionsHold(repeatLogic: QueuedConstructRepeatLog
  *
  * @param sourceQueuedAction - The queued action (or action selector) that just succeeded.
  * @returns Nothing. The re-queued action is inserted into the initiator's action queue.
- * @throws {VivInternalError} If `sourceQueuedAction` does not have repeat logic (defensive guard).
+ * @throws {@link VivInternalError} If `sourceQueuedAction` does not have repeat logic (defensive guard).
  */
 export async function requeueAction(sourceQueuedAction: QueuedAction | QueuedActionSelector): Promise<void> {
     // Construct the re-queued action from the source, but with a fresh UID
@@ -724,7 +724,7 @@ export async function requeueAction(sourceQueuedAction: QueuedAction | QueuedAct
  *
  * @param sourceQueuedPlan - The original queued plan (or plan selector) stashed at launch time.
  * @returns Nothing. The re-queued plan is appended to the global plan queue.
- * @throws {VivInternalError} If `sourceQueuedPlan` does not have repeat logic (defensive guard).
+ * @throws {@link VivInternalError} If `sourceQueuedPlan` does not have repeat logic (defensive guard).
  */
 export async function requeuePlan(sourceQueuedPlan: QueuedPlan | QueuedPlanSelector): Promise<void> {
     // Construct the re-queued plan from the source, but with a fresh UID

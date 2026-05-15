@@ -44,7 +44,8 @@ export interface CharacterMemory {
     /**
      * Whether the memory has been forgotten.
      *
-     * A memory is forgotten when its salience falls below the {@link HostApplicationAdapterConfig.memoryForgettingSalienceThreshold}.
+     * A memory is forgotten when its salience falls below the
+     * {@link HostApplicationAdapterConfig.memoryForgettingSalienceThreshold}.
      */
     forgotten: boolean;
 }

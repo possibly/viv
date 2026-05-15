@@ -64,7 +64,7 @@ export interface HostApplicationAdapter {
      *
      * @param entityID - The entity ID for the entity whose data is to be returned.
      * @returns The requested entity view.
-     * @throws {Error} If there is no entity with the given entity ID.
+     * @throws An error if there is no entity with the given entity ID.
      */
     readonly getEntityView: (entityID: UID) => AsyncOrSync<EntityView>;
     /**
@@ -148,7 +148,7 @@ export interface HostApplicationAdapter {
      * @param locationID - If specified, the entity ID for a location to search for entities,
      *     which should only be submitted for characters and items.
      * @returns An array of entity IDs.
-     * @throws {Error} If `locationID` is present but `entityType` is not {@link EntityType.Character}
+     * @throws An error if `locationID` is present but `entityType` is not {@link EntityType.Character}
      *     or {@link EntityType.Item}.
      */
     readonly getEntityIDs: (entityType: EntityType, locationID?: UID) => AsyncOrSync<UID[]>;
@@ -543,7 +543,7 @@ export interface HostApplicationAdapterFastPaths {
      *     a string so that you can use something like Lodash to carry out the retrieval, you'll need to take
      *     care to ensure that your conversion procedure is properly robust.
      * @returns The value stored at the specified path in the given entity's data.
-     * @throws {Error} If the property does not exist.
+     * @throws An error if the property does not exist.
      */
     readonly getEntityProperty?: (entityID: UID, propertyPath: (string | number)[]) => AsyncOrSync<unknown>;
     /**

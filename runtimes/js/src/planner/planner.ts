@@ -43,7 +43,7 @@ import { PlanInstructionDiscriminator, PlanPhaseReactionWindowOperator } from ".
  *  - Resume execution of all other plans that were already active at the beginning of the tick.
  *
  * @returns Nothing. All changes are persisted via side effects.
- * @throws {VivInternalError} If there is an unexpected construct type in the plan queue (defensive guard).
+ * @throws {@link VivInternalError} If there is an unexpected construct type in the plan queue (defensive guard).
  */
 export async function tickPlanner(): Promise<void> {
     // First, grab snapshots of the plan queue and current active plans at the beginning of this tick
@@ -233,9 +233,10 @@ async function initializePlanState(
  *
  * @param planState - Current plan state for the plan being executed.
  * @returns Nothing. State updates and plan resolution are handled via side effects, as applicable.
- * @throws {VivInternalError} If the program counter doesn't properly update (defensive guard).
- * @throws {VivInternalError} If the plan is blocked by a wait instruction, but with no deadline (defensive guard).
- * @throws {VivInternalError} If the plan is blocked by a reaction window, but with
+ * @throws {@link VivInternalError} If the program counter doesn't properly update (defensive guard).
+ * @throws {@link VivInternalError} If the plan is blocked by a wait instruction,
+ *     but with no deadline (defensive guard).
+ * @throws {@link VivInternalError} If the plan is blocked by a reaction window, but with
  *     no queued constructs (defensive guard).
  */
 async function executePlan(planState: PlanState): Promise<void> {
@@ -305,7 +306,7 @@ async function executePlan(planState: PlanState): Promise<void> {
  * @param planState - Current plan state for the plan being executed.
  * @param planDefinition - Definition for the plan being executed.
  * @returns Nothing. The plan state is mutated in place.
- * @throws {VivInternalError} If a plan instruction has an invalid type (defensive guard).
+ * @throws {@link VivInternalError} If a plan instruction has an invalid type (defensive guard).
  */
 async function executePlanInstruction(
     planState: PlanState,
@@ -387,7 +388,7 @@ async function executePlanInstruction(
  * @param planState - Current plan state for the plan being executed.
  * @param planDefinition - Definition for the plan being executed.
  * @returns The current plan instruction.
- * @throws {VivExecutionError} If the program counter does not point to a valid instruction in the
+ * @throws {@link VivExecutionError} If the program counter does not point to a valid instruction in the
  *     current phase's tape (defensive guard against corrupted plan state).
  */
 function fetchCurrentPlanInstruction(
@@ -491,7 +492,7 @@ async function executePlanInstructionJumpIfFalse(
  * @param instruction - A Viv {@link PlanInstructionLoopInit}.
  * @param planState - Current plan state for the plan being executed.
  * @returns Nothing. The plan state is mutated in place.
- * @throws {VivExecutionError} If the loop iterable does not evaluate to an array.
+ * @throws {@link VivExecutionError} If the loop iterable does not evaluate to an array.
  */
 async function executePlanInstructionLoopInit(
     instruction: PlanInstructionLoopInit,
@@ -555,7 +556,7 @@ async function executePlanInstructionLoopNext(
  *
  * @param planState - Current plan state for the plan being executed.
  * @returns The loop frame at the top of the loop-frame stack in the given plan state.
- * @throws {VivInternalError} If a loop is not deemed exhausted but its stack is empty (defensive guard).
+ * @throws {@link VivInternalError} If a loop is not deemed exhausted but its stack is empty (defensive guard).
  */
 function fetchCurrentLoopFrame(planState: PlanState): PlanLoopFrame {
     if (!planState.loopStack.length) {
@@ -597,8 +598,8 @@ async function executePlanInstructionReaction(
  * @param planState - Current plan state for the plan being executed.
  * @param planDefinition - Definition for the plan being executed.
  * @returns Nothing. The plan state is mutated in place.
- * @throws {VivInternalError} If there is no reaction window in the plan state (defensive guard).
- * @throws {VivInternalError} If the reaction window has an invalid operator (defensive guard).
+ * @throws {@link VivInternalError} If there is no reaction window in the plan state (defensive guard).
+ * @throws {@link VivInternalError} If the reaction window has an invalid operator (defensive guard).
  */
 async function executePlanInstructionReactionWindowClose(
     instruction: PlanInstructionReactionWindowClose,
@@ -679,7 +680,7 @@ async function executePlanInstructionSucceed(planState: PlanState): Promise<void
  * @param planState - Current plan state for the plan being executed.
  * @param planDefinition - Definition for the plan being executed.
  * @returns Nothing. The plan state is mutated in place.
- * @throws {VivInternalError} If there is no wait deadline in the plan state (defensive guard).
+ * @throws {@link VivInternalError} If there is no wait deadline in the plan state (defensive guard).
  */
 async function executePlanInstructionWaitEnd(
     instruction: PlanInstructionWaitEnd,
@@ -744,7 +745,7 @@ async function executePlanInstructionWaitStart(
  * @param targetAddress - If specified, a target address to serve as the new program counter. If none
  *     is provided, by default we will advance to the next instruction on the tape, if any, else `null`.
  * @returns Nothing. The plan state is mutated in place.
- * @throws {VivExecutionError} If the target address falls outside the bounds of the current phase's
+ * @throws {@link VivExecutionError} If the target address falls outside the bounds of the current phase's
  *     tape (defensive guard against corrupted plan state).
  */
 async function stepPlanProgramCounter(
