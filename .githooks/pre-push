@@ -13,17 +13,19 @@
 
 set -euo pipefail
 
-# Skip preflight for tag-only pushes. Tags are cut from commits that have
-# already passed preflight (via a prior push) and CI, so rerunning the
-# multi-minute suite would only stall the release.
-all_tags=true
-while read -r local_ref _local_sha _remote_ref _remote_sha; do
-    if [[ "$local_ref" != refs/tags/* ]]; then
-        all_tags=false
+# Skip preflight for tag-only pushes and deletions. Tags are cut from commits
+# that have already passed preflight (via a prior push) and CI, so rerunning
+# the multi-minute suite would only stall the release. Deletions remove refs
+# without introducing new code, so there's nothing for preflight to validate.
+all_skippable=true
+while read -r local_ref local_sha _remote_ref _remote_sha; do
+    if [[ "$local_ref" == refs/tags/* ]] || [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+        continue
     fi
+    all_skippable=false
 done
-if [ "$all_tags" = true ]; then
-    echo "Skipping preflight (tag-only push)"
+if [ "$all_skippable" = true ]; then
+    echo "Skipping preflight (tag push and/or deletion)"
     exit 0
 fi
 
