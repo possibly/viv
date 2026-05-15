@@ -52,6 +52,9 @@ def test_plan_conditional_tape_compilation() -> None:
     assert instruction_types.count("jump") == 2
     jump_indices = [i for i, t in enumerate(instruction_types) if t == "jump"]
     assert tape[jump_indices[0]]["target"] == tape[jump_indices[1]]["target"]
+    # Both trailing jumps must target the first instruction after the conditional. Since
+    # the conditional occupies the entire phase, that position equals the tape length.
+    assert tape[jump_indices[0]]["target"] == len(tape)
 
 
 def test_plan_loop_tape_compilation() -> None:

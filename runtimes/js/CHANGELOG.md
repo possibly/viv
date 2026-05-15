@@ -4,6 +4,12 @@ All notable changes to the Viv JavaScript runtime (`@siftystudio/viv-runtime`) w
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.10.3] – 2026-05-15
+
+### Fixed
+
+* Plans whose phases ended in a loop crashed with a raw `TypeError` when the loop's iterable was exhausted, rather than advancing to the next phase (or resolving the plan in the case of a final phase).
+
 ## [0.10.2] – 2026-04-07
 
 ### Added

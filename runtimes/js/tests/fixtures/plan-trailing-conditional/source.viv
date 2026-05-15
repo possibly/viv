@@ -1,0 +1,99 @@
+// Plans with conditionals in plan phases
+
+reserved action gate:
+    roles:
+        @actor:
+            as: initiator
+
+
+reserved action body:
+    roles:
+        @actor:
+            as: initiator
+
+
+reserved action alt:
+    roles:
+        @actor:
+            as: initiator
+
+
+reserved action finish:
+    roles:
+        @actor:
+            as: initiator
+
+
+plan trailing-if:
+    roles:
+        @actor:
+            as: character
+    phases:
+        >act:
+            queue action gate:
+                with:
+                    @actor: @actor
+            if @actor.flag:
+                queue action body:
+                    with:
+                        @actor: @actor
+            end
+
+
+plan trailing-if-else:
+    roles:
+        @actor:
+            as: character
+    phases:
+        >act:
+            queue action gate:
+                with:
+                    @actor: @actor
+            if @actor.flag:
+                queue action body:
+                    with:
+                        @actor: @actor
+            else:
+                queue action alt:
+                    with:
+                        @actor: @actor
+            end
+
+
+plan trailing-if-then-finish:
+    roles:
+        @actor:
+            as: character
+    phases:
+        >act:
+            queue action gate:
+                with:
+                    @actor: @actor
+            if @actor.flag:
+                queue action body:
+                    with:
+                        @actor: @actor
+            end
+        >wrap-up:
+            queue action finish:
+                with:
+                    @actor: @actor
+
+
+plan if-with-tail:
+    roles:
+        @actor:
+            as: character
+    phases:
+        >act:
+            queue action gate:
+                with:
+                    @actor: @actor
+            if @actor.flag:
+                queue action body:
+                    with:
+                        @actor: @actor
+            end
+            queue action finish:
+                with:
+                    @actor: @actor

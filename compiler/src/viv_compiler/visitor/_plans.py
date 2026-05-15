@@ -260,11 +260,12 @@ class VisitorMixinPlans(PTNodeVisitor):
             conditional_instructions_so_far += [intermediate_jump_if_false_instruction] + branch_instructions
             intermediate_jump_instruction = internal_types.IntermediatePlanInstructionJump(
                 type=external_types.PlanInstructionDiscriminator.JUMP,
-                # Jump forward to the first instruction after the conditional. This entails jumping past this
-                # instruction (hence the leading `+1`) and then past all remaining branches and the alternative,
-                # as applicable. This works because the number of trailing instructions in the conditional will
-                # always be precisely `n_conditional_instructions - len(conditional_instructions_so_far)`.
-                _target_offset=(1 + n_conditional_instructions - len(conditional_instructions_so_far))
+                # Jump forward to the first instruction after the conditional. This entails jumping past
+                # all remaining branches and the alternative, as applicable, which is always precisely
+                # `n_conditional_instructions - len(conditional_instructions_so_far)`. Note that we
+                # don't need an extra `+1` here because `conditional_instructions_so_far` already
+                # includes this jump.
+                _target_offset=(n_conditional_instructions - len(conditional_instructions_so_far))
             )
             conditional_instructions_so_far += [intermediate_jump_instruction]
         return conditional_instructions_so_far

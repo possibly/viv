@@ -4,6 +4,12 @@ All notable changes to the Viv compiler (`viv-compiler`) will be documented in t
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.12.2] – 2026-05-15
+
+### Fixed
+
+* The trailing `jump` instructions emitted for plan conditionals targeted one position past the intended destination, causing runtime crashes when the conditional sat at the end of a phase and silent skipping of the subsequent instruction in all other cases.
+
 ## [0.12.1] – 2026-04-19
 
 ### Fixed

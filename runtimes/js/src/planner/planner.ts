@@ -387,12 +387,23 @@ async function executePlanInstruction(
  * @param planState - Current plan state for the plan being executed.
  * @param planDefinition - Definition for the plan being executed.
  * @returns The current plan instruction.
+ * @throws {VivExecutionError} If the program counter does not point to a valid instruction in the
+ *     current phase's tape (defensive guard against corrupted plan state).
  */
 function fetchCurrentPlanInstruction(
     planState: PlanState,
     planDefinition: PlanDefinition
 ): PlanInstruction {
-    return planDefinition.phases[planState.currentPhase].tape[planState.programCounter];
+    const currentPhaseDefinition = planDefinition.phases[planState.currentPhase];
+    const currentInstruction = currentPhaseDefinition.tape[planState.programCounter];
+    if (currentInstruction === undefined) {
+        throw new VivExecutionError(
+            `Plan '${planState.planName}' could not continue executing in phase '${planState.currentPhase}' `
+            + `due to an apparently corrupted plan state`,
+            { planID: planState.id, programCounter: planState.programCounter }
+        );
+    }
+    return currentInstruction;
 }
 
 /**
@@ -587,7 +598,7 @@ async function executePlanInstructionReaction(
  * @param planDefinition - Definition for the plan being executed.
  * @returns Nothing. The plan state is mutated in place.
  * @throws {VivInternalError} If there is no reaction window in the plan state (defensive guard).
- * @throws {VivInternalError} The reaction window has an invalid operator (defensive guard).
+ * @throws {VivInternalError} If the reaction window has an invalid operator (defensive guard).
  */
 async function executePlanInstructionReactionWindowClose(
     instruction: PlanInstructionReactionWindowClose,
@@ -733,19 +744,35 @@ async function executePlanInstructionWaitStart(
  * @param targetAddress - If specified, a target address to serve as the new program counter. If none
  *     is provided, by default we will advance to the next instruction on the tape, if any, else `null`.
  * @returns Nothing. The plan state is mutated in place.
+ * @throws {VivExecutionError} If the target address falls outside the bounds of the current phase's
+ *     tape (defensive guard against corrupted plan state).
  */
 async function stepPlanProgramCounter(
     planState: PlanState,
     planDefinition: PlanDefinition,
     targetAddress: PlanInstructionAddress | null = null
 ): Promise<void> {
-    // If a target address was provided, go to it now and return
+    const currentPhaseDefinition = planDefinition.phases[planState.currentPhase];
+    // If a target address was provided, validate it. Then either throw, jump to it, or advance the phase.
     if (targetAddress !== null) {
+        if (targetAddress < 0 || targetAddress > currentPhaseDefinition.tape.length) {
+            throw new VivExecutionError(
+                `Plan '${planState.planName}' could not continue executing in phase '${planState.currentPhase}' `
+                + `due to an apparently corrupted plan state`,
+                { planID: planState.id, targetAddress }
+            );
+        }
+        // If the target is equal to the tape length, we have just followed an exit jump from either
+        // a loop or a conditional that sits at the end of the phase. As always, reaching the end of
+        // a phase entails advancing into the next phase (if there is one, else succeeding the plan).
+        if (targetAddress === currentPhaseDefinition.tape.length) {
+            await advancePlanPhase(planState, planDefinition);
+            return;
+        }
         planState.programCounter = targetAddress;
         return;
     }
     // Otherwise, attempt to step to the next instruction on the tape for the current phase
-    const currentPhaseDefinition = planDefinition.phases[planState.currentPhase];
     if (currentPhaseDefinition.tape[planState.programCounter + 1]) {
         planState.programCounter++;
         return;

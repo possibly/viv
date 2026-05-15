@@ -1,0 +1,42 @@
+// Plans whose phases end in a loop
+
+reserved action visit:
+    roles:
+        @visitor:
+            as: initiator
+
+
+reserved action finish:
+    roles:
+        @visitor:
+            as: initiator
+
+
+plan tour-once:
+    roles:
+        @traveler:
+            as: character
+    phases:
+        >visit:
+            loop @traveler.destinations as _@place:
+                queue action visit:
+                    with:
+                        @visitor: @traveler
+            end
+
+
+plan tour-and-finish:
+    roles:
+        @traveler:
+            as: character
+    phases:
+        >visit:
+            loop @traveler.destinations as _@place:
+                queue action visit:
+                    with:
+                        @visitor: @traveler
+            end
+        >wrap-up:
+            queue action finish:
+                with:
+                    @visitor: @traveler
