@@ -250,6 +250,26 @@ export interface HostApplicationAdapter {
         value: unknown
     ) => AsyncOrSync<void>;
     /**
+     * If implemented, a random number generator (RNG).
+     *
+     * When supplied, this function will be used whenever pseudorandomness is required. This allows
+     * for deterministic Viv execution given a constant seed, assuming the state of the storyworld
+     * is not mutated by other systems in a non-deterministic manner (since this could of course
+     * cause different logical branching during Viv execution).
+     *
+     * A few notes:
+     *  - This is invoked frequently, so use a cheap implementation when possible.
+     *  - Because the host application manages the RNG, it will also need to persist the RNG state,
+     *    should that be required.
+     *  - As noted above, determinism in Viv will break down if an external force introduces nondeterminism
+     *    into either the storyworld state or the host application's invocation of Viv. For instance, if a
+     *    player interaction causes a character to act on a timestep who otherwise wouldn't have, random
+     *    numbers will be used that otherwise wouldn't have been used yet, leading to stream divergence.
+     *
+     * @returns A floating-point number in the interval `[0, 1)`.
+     */
+    readonly rng?: () => AsyncOrSync<number>;
+    /**
      * If supplied, configuration parameters controlling various aspects of Viv system behavior.
      *
      * Default values will be used for parameters that are not supplied.

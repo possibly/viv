@@ -2,12 +2,26 @@
  * Tests for pure utility functions.
  */
 
-import { describe, it, expect } from "vitest";
+import { beforeAll, describe, it, expect } from "vitest";
 
+import { initializeVivRuntime } from "../src";
 import { clamp, deduplicate, randomNormal, removeAll, weightedShuffle } from "../src/utils/general-utils";
 import { groundRelativePointInTime, isEntityView, timeOfDayIsAtOrAfter } from "../src/utils/viv-utils";
 import { kCombinations } from "../src/role-caster/utils";
 import { TimeFrameTimeUnit } from "../src/dsl";
+import { loadBundle } from "./fixtures/utils";
+import { setup as setupMinimal } from "./fixtures/minimal-action/setup";
+
+// Several utilities under test (e.g., `randomNormal`, `weightedShuffle`) read from `GATEWAY.rng()`,
+// so the runtime must be initialized -- with any adapter -- before they are called.
+beforeAll(() => {
+    const bundle = loadBundle("minimal-action");
+    const { adapter } = setupMinimal();
+    initializeVivRuntime({
+        contentBundle: bundle,
+        adapter,
+    });
+});
 
 describe("kCombinations", () => {
     it("yields all 2-combinations from a pool of 4", () => {
@@ -144,13 +158,13 @@ describe("removeAll", () => {
 });
 
 describe("randomNormal", () => {
-    it("propagates NaN when mean is NaN", () => {
-        const result = randomNormal(NaN, 1);
+    it("propagates NaN when mean is NaN", async () => {
+        const result = await randomNormal(NaN, 1);
         expect(result).toBeNaN();
     });
 
-    it("propagates NaN when sd is NaN", () => {
-        const result = randomNormal(0, NaN);
+    it("propagates NaN when sd is NaN", async () => {
+        const result = await randomNormal(0, NaN);
         expect(result).toBeNaN();
     });
 });
@@ -168,18 +182,18 @@ describe("isEntityView", () => {
 });
 
 describe("weightedShuffle", () => {
-    it("throws when items and weights have different lengths", () => {
-        expect(() => weightedShuffle([1, 2], [1.0])).toThrow();
+    it("throws when items and weights have different lengths", async () => {
+        await expect(weightedShuffle([1, 2], [1.0])).rejects.toThrow();
     });
 
-    it("throws when a weight is negative", () => {
-        expect(() => weightedShuffle([1, 2], [1.0, -1.0])).toThrow();
+    it("throws when a weight is negative", async () => {
+        await expect(weightedShuffle([1, 2], [1.0, -1.0])).rejects.toThrow();
     });
 
-    it("places zero-weight items last", () => {
+    it("places zero-weight items last", async () => {
         // Run multiple times to increase confidence given nondeterminism
         for (let i = 0; i < 20; i++) {
-            const result = weightedShuffle(["a", "b", "c"], [100, 100, 0]);
+            const result = await weightedShuffle(["a", "b", "c"], [100, 100, 0]);
             expect(result[result.length - 1]).toBe("c");
         }
     });

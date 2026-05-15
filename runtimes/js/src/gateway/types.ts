@@ -95,6 +95,10 @@ export interface HostApplicationGateway {
      */
     readonly getCurrentTimeOfDay: (() => Promise<TimeOfDay>) | null;
     /**
+     * Gateway wrapper around {@link HostApplicationAdapter.rng}.
+     */
+    readonly rng: () => Promise<number>;
+    /**
      * Gateway operation corresponding to {@link HostApplicationAdapterFastPaths.isEntityID}.
      */
     readonly isEntityID: (potentialEntityID: string) => Promise<boolean>;

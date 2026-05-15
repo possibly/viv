@@ -129,7 +129,7 @@ export async function interpretExpression(
                 result = await evaluateCustomFunctionCall(expression.value, context);
                 break;
             case ExpressionDiscriminator.ChanceExpression:
-                result = evaluateChanceExpression(expression.value);  // No context needed
+                result = await evaluateChanceExpression(expression.value);  // No context needed
                 break;
             case ExpressionDiscriminator.Conditional:
                 result = await evaluateConditional(expression.value, context, shortCircuit);
@@ -373,8 +373,8 @@ async function evaluateArithmeticExpression(
  * @param chance - A floating-point number in the range [0.0, 1.0],
  * @returns Whether the given `chance` value exceeds a pseudorandom number in the range [0.0, 1.0].
  */
-function evaluateChanceExpression(chance: number): boolean {
-    return Math.random() < chance;
+async function evaluateChanceExpression(chance: number): Promise<boolean> {
+    return (await GATEWAY.rng()) < chance;
 }
 
 /**

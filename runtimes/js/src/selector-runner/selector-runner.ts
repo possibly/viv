@@ -104,7 +104,7 @@ async function sortSelectorCandidates(
         case SelectorPolicy.Ordered:
             return candidates;
         case SelectorPolicy.Randomized:
-            shuffle(candidates);
+            await shuffle(candidates);
             return candidates;
         case SelectorPolicy.Weighted:
             const weights: number[] = [];
@@ -124,7 +124,7 @@ async function sortSelectorCandidates(
                 }
                 weights.push(weight);
             }
-            return weightedShuffle<SelectorCandidate>(candidates, weights);
+            return await weightedShuffle<SelectorCandidate>(candidates, weights);
         default:
             throw new VivInternalError(`Unexpected sort policy: '${(selectorDefinition as any).policy}'`);
     }

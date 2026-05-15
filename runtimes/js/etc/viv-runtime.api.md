@@ -199,6 +199,7 @@ export interface HostApplicationAdapter {
     readonly getEntityView: (entityID: UID) => AsyncOrSync<EntityView>;
     readonly getVivInternalState: () => AsyncOrSync<VivInternalState | null>;
     readonly provisionActionID: () => AsyncOrSync<UID>;
+    readonly rng?: () => AsyncOrSync<number>;
     readonly saveActionData: (actionID: UID, actionData: ActionView) => AsyncOrSync<void>;
     readonly saveCharacterMemory: (characterID: UID, actionID: UID, memory: CharacterMemory) => AsyncOrSync<void>;
     readonly saveItemInscriptions: (itemID: UID, inscriptions: UID[]) => AsyncOrSync<void>;

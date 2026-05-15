@@ -58,6 +58,7 @@ export function createVivAdapterGateway(adapter: HostApplicationAdapter): void {
         getCurrentTimestamp: promisify(adapter.getCurrentTimestamp),
         getEntityLabel: promisify(adapter.getEntityLabel),
         getCurrentTimeOfDay: adapter.getCurrentTimeOfDay ? promisify(adapter.getCurrentTimeOfDay) : null,
+        rng: adapter.rng ? promisify(adapter.rng) : promisify(Math.random),
         getVivInternalState,
         updateEntityProperty,
         getEntityProperty,

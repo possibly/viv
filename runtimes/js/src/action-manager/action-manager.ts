@@ -581,7 +581,7 @@ async function targetGeneralAction(initiatorLevelCache: InitiatorLevelCache): Pr
     constructDefinitions.push(...Object.values(CONTENT_BUNDLE.actionSelectors));
     let constructPool = constructDefinitions.filter(construct => !construct.reserved);
     // Shuffle the prospective actions and action selectors
-    shuffle(constructPool);
+    await shuffle(constructPool);
     // Start targeting actions!
     for (const constructDefinition of constructPool) {
         const precastBindings = {[constructDefinition.initiator]: [initiatorLevelCache.initiatorData.id]};
@@ -1187,7 +1187,7 @@ async function imposeEmbargoes(actionDefinition: ActionDefinition, actionView: A
         }
         // Package up the embargo data
         const embargoData: ActiveEmbargo = {
-            id: randomID(),
+            id: await randomID(),
             actionName: actionView.name,
             location: embargoDeclaration.here ? actionView.location : null,
             expiration,
@@ -1264,7 +1264,7 @@ export async function forciblyTargetAction(
         initiatorPool = [initiatorID];
     } else {
         initiatorPool = await GATEWAY.getEntityIDs(EntityType.Character);
-        shuffle<UID>(initiatorPool);
+        await shuffle<UID>(initiatorPool);
     }
     // For each initiator in the pool, attempt the action
     for (const candidateInitiatorID of initiatorPool) {

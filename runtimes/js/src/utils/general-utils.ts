@@ -2,6 +2,7 @@ import isEqual from "lodash/isEqual";
 import cloneDeep from "lodash/cloneDeep";
 
 import { VivInternalError } from "../errors";
+import { GATEWAY } from "../gateway";
 
 /**
  * Returns a random alphanumeric identifier of the given length.
@@ -9,12 +10,12 @@ import { VivInternalError } from "../errors";
  * @param length - The number of characters for the random ID.
  * @returns A random alphanumeric identifier of the given length.
  */
-export function randomID(length = 6): string {
+export async function randomID(length = 6): Promise<string> {
     let id = '';
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const numberOfCharacters = characters.length;
     for (let i = 0; i < length; i++ ) {
-        id += characters.charAt(Math.floor(Math.random() * numberOfCharacters));
+        id += characters.charAt(Math.floor((await GATEWAY.rng()) * numberOfCharacters));
     }
     return id;
 }
@@ -63,9 +64,9 @@ export function deduplicate<T>(array: readonly T[]): T[] {
  * @param array - The array to shuffle.
  * @returns Nothing. The given array is shuffled in place.
  */
-export function shuffle<T>(array: T[]): void {
+export async function shuffle<T>(array: T[]): Promise<void> {
     for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor((await GATEWAY.rng()) * (i + 1));
         const tmp = array[i];
         array[i] = array[j];
         array[j] = tmp;
@@ -86,23 +87,23 @@ export function shuffle<T>(array: T[]): void {
  * @throws {@link VivInternalError} If there is not the same number of items and weights (defensive guard).
  * @throws {@link VivInternalError} If an item has a negative weight (defensive guard).
  */
-export function weightedShuffle<T>(items: readonly T[], weights: readonly number[]): T[] {
+export async function weightedShuffle<T>(items: readonly T[], weights: readonly number[]): Promise<T[]> {
     // Apply the Gumbel-Max trick
     if (items.length !== weights.length) {
         throw new VivInternalError("Cannot perform weighted shuffle: different number of items and weights");
     }
     const indices = items.map((_, i) => i);
-    shuffle(indices);
-    const keyed = indices.map(i => {
+    await shuffle(indices);
+    const keyed = await Promise.all(indices.map(async i => {
         const item = items[i];
         const weight = weights[i];
         if (weight < 0) {
             throw new VivInternalError("Cannot perform weighted shuffle: encountered negative weight for item");
         }
         const logWeight = weight > 0 ? Math.log(weight) : -Infinity;  // Positive weights will always dominate
-        const gumbelNoise = -Math.log(-Math.log(Math.random()));
+        const gumbelNoise = -Math.log(-Math.log(await GATEWAY.rng()));
         return {item, score: logWeight + gumbelNoise};
-    });
+    }));
     // Now sort on the derived values
     keyed.sort((a, b) => b.score - a.score);
     return keyed.map(key => key.item);
@@ -120,17 +121,17 @@ export function weightedShuffle<T>(items: readonly T[], weights: readonly number
  * @param max - A maximum viable value (used for clamping).
  * @returns A number sampled from the specified normal distribution, with clamping between `min` and `max`.
  */
-export function randomNormal(
+export async function randomNormal(
     mean: number,
     sd: number,
     min: number | null = null,
     max: number | null = null
-): number {
+): Promise<number> {
     // Sample from a normal distribution in [0, 1)
     let value, u, v, s, mul;
     do {
-        u = (Math.random() * 2) - 1;
-        v = (Math.random() * 2) - 1;
+        u = ((await GATEWAY.rng()) * 2) - 1;
+        v = ((await GATEWAY.rng()) * 2) - 1;
         s = u * u + v * v;
     } while (s === 0 || s >= 1);
     mul = Math.sqrt(-2 * Math.log(s) / s);

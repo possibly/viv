@@ -1590,7 +1590,7 @@
       "properties": {
         "config": {
           "$ref": "#/definitions/HostApplicationAdapterConfig",
-          "description": "If supplied, configuration parameters controlling various aspects of Viv system behavior. Default values will be used for parameters that are not supplied."
+          "description": "If supplied, configuration parameters controlling various aspects of Viv system behavior.\n\nDefault values will be used for parameters that are not supplied."
         },
         "debug": {
           "$ref": "#/definitions/HostApplicationAdapterDebuggingSettings",
@@ -1644,6 +1644,9 @@
         "provisionActionID": {
           "isFunction": true
         },
+        "rng": {
+          "isFunction": true
+        },
         "saveActionData": {
           "isFunction": true
         },
@@ -1679,7 +1682,7 @@
       "description": "Configuration parameters controlling various aspects of Viv system behavior.",
       "properties": {
         "loopMaxIterations": {
-          "description": "The maximum number of iterations to allow in a Viv loop. Rather than throwing an error if the threshold is reached, the runtime will simply exit the loop.",
+          "description": "The maximum number of iterations to allow in a Viv loop.\n\nRather than throwing an error if the threshold is reached, the runtime will simply exit the loop.",
           "type": "number"
         },
         "memoryForgettingSalienceThreshold": {

@@ -1,0 +1,18 @@
+// Roles with random cardinality: a chance directive on optional slots and a mean directive on a quorum
+
+action recruit:
+    roles:
+        @recruiter:
+            as: initiator
+        @recruits*:
+            as: partner
+            n: 0-5 [50%]
+
+
+action rally:
+    roles:
+        @leader:
+            as: initiator
+        @crowd*:
+            as: bystander
+            n: 2-10 [~5]

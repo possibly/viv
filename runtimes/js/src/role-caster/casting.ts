@@ -237,7 +237,7 @@ async function castRole(
     // Add this role into the bindings, if needed
     roleCastingData.currentBindings[roleName] ??= [];
     // Get the number of role slots to fill
-    let nRemainingSlots = getNumberOfRoleSlotsToFill(roleCastingData, roleName, fillingOptionalSlots);
+    let nRemainingSlots = await getNumberOfRoleSlotsToFill(roleCastingData, roleName, fillingOptionalSlots);
     // If there are no remaining slots to fill, we can return the current bindings as is, to cue success
     if (!nRemainingSlots) {
         return roleCastingData.currentBindings;
@@ -376,11 +376,11 @@ async function castRole(
  *     the minimum required number specified in the role definition.
  * @returns The number of role slots to be filled in the current attempt to cast the given role.
  */
-function getNumberOfRoleSlotsToFill(
+async function getNumberOfRoleSlotsToFill(
     roleCastingData: RoleCastingData,
     roleName: RoleName,
     fillingOptionalSlots: boolean
-): number {
+): Promise<number> {
     // Retrieve the role definition
     const roleDefinition = getRoleDefinition(roleCastingData.constructDefinition, roleName);
     // If we're not filling optional slots, we need to fill precisely the minimum number required
@@ -391,7 +391,7 @@ function getNumberOfRoleSlotsToFill(
     // role, we need to determine the de facto max value for this targeting instance.
     let effectiveMax = roleDefinition.max;
     if (roleDefinition.mean !== null && roleDefinition.sd !== null) {
-        effectiveMax = randomNormal(
+        effectiveMax = await randomNormal(
             roleDefinition.mean,
             roleDefinition.sd,
             roleDefinition.min,
@@ -404,7 +404,7 @@ function getNumberOfRoleSlotsToFill(
         // for each optional slot, which is equivalent to testing each candidate individually as they qualify.
         effectiveMax = roleDefinition.min;
         for (let i = roleDefinition.min; i < roleDefinition.max; i++) {
-            if (Math.random() >= roleDefinition.chance) {
+            if ((await GATEWAY.rng()) >= roleDefinition.chance) {
                 continue;
             }
             effectiveMax++;
@@ -749,7 +749,7 @@ async function getCastingPoolForRole(
     // Before returning the pool, let's deduplicate it and shuffle it. In the course of
     // deduplicating the pool, we will also end up with a copy.
     pool = deduplicate<RoleCandidate>(pool);  // Creates a copy
-    shuffle(pool);
+    await shuffle(pool);
     // Return the pool
     return pool;
 }
