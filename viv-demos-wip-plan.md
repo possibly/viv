@@ -15,15 +15,26 @@ linking to all of them.
       viv/                      ← git submodule → possibly/viv @ browser/runtime
       shared/
         viv-runtime.js          ← built from viv/dist/index.browser.js (build artifact, tracked)
+        ui/
+          chronicle.js          ← shared debug UI: scrolling event log
+          state-inspector.js    ← shared debug UI: live entity/world state tree
+          debug-panel.js        ← composes the above into a collapsible overlay
+          shared.css            ← common styles (debug panel, fonts, reset)
       demos/
         01-hello-world/
           index.html            ← served at /demos/01-hello-world/
-          main.js               ← host app, imports from ../../shared/viv-runtime.js
+          main.js               ← demo-specific host app and UI
+          style.css             ← demo-specific styles
           sim.viv               ← viv source (checked in)
           bundle.json           ← pre-compiled bytecode (checked in)
         02-chatbot/
           index.html            ← served at /demos/02-chatbot/
-          ...
+          main.js
+          style.css
+          sim.viv
+          bundle.json
+          ui/                   ← demo-specific UI components if needed
+            chat-panel.js
       index.html                ← landing page listing all demos with links
       Makefile
       .gitmodules
@@ -96,10 +107,46 @@ prerequisite for anyone who just wants to run the demos.
 
 ---
 
+## UI structure: per-demo vs shared
+
+Each demo owns its primary UI entirely — layout, visuals, interaction model. These live
+in the demo's own `main.js` and `style.css` and are not shared.
+
+Debugging UIs that are useful across demos live in `shared/ui/` as plain ES modules.
+A demo opts in by importing what it wants:
+
+    import { DebugPanel } from "../../shared/ui/debug-panel.js";
+    import { initializeVivRuntime } from "../../shared/viv-runtime.js";
+
+No build step. The browser resolves the relative imports natively since everything is
+`type="module"`.
+
+### Likely shared debug components
+
+- `chronicle.js` — renders the viv event log (mirrors the terminal visualizer's chronicle
+  pane but in HTML); wraps an auto-scrolling `<pre>` or `<ul>` fed by the runtime's
+  chronicle callback
+- `state-inspector.js` — live tree view of the current world state (entities, items,
+  locations and their fields); useful for any demo
+- `debug-panel.js` — collapsible overlay that composes the above; toggled with a keyboard
+  shortcut (e.g. backtick) so it doesn't interfere with the demo's own UI
+
+### Per-demo UI
+
+Each demo's `main.js` wires up the demo-specific presentation: whatever HTML the demo
+renders in response to viv events. A chatbot demo might render a chat bubble list; a
+map demo might update SVG positions. That code stays in the demo folder.
+
+If a demo needs its own reusable sub-components (e.g. a chat panel used across multiple
+files in that demo), put them in `demos/<name>/ui/`.
+
+---
+
 ## What each demo needs
 
-- `index.html` — loads main.js as a module
-- `main.js` — host app, imports `initializeVivRuntime` from `../../shared/viv-runtime.js`
+- `index.html` — loads `main.js` as a module, links `style.css`
+- `main.js` — wires up the runtime, renders demo-specific UI, optionally mounts DebugPanel
+- `style.css` — demo-specific styles (import `../../shared/ui/shared.css` at the top)
 - `sim.viv` — viv simulation source
 - `bundle.json` — pre-compiled viv bytecode (compile with `make compile`)
 
