@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viv Compiler — WASM Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 20px 32px;
+      border-bottom: 1px solid #1e2430;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    header .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #7c3aed;
+      color: #ede9fe;
+      padding: 2px 8px;
+      border-radius: 99px;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    .pane {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .pane + .pane {
+      border-left: 1px solid #1e2430;
+    }
+
+    .pane-header {
+      padding: 12px 20px;
+      background: #0f1117;
+      border-bottom: 1px solid #1e2430;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .pane-header span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #64748b;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      border: none;
+      outline: none;
+      background: #0d1016;
+      color: #94d2bd;
+      font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 20px;
+      tab-size: 4;
+    }
+
+    #output {
+      flex: 1;
+      overflow: auto;
+      background: #0d1016;
+      font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      padding: 20px;
+      white-space: pre;
+      color: #94a3b8;
+    }
+
+    #output.success { color: #a3e635; }
+    #output.error   { color: #f87171; }
+
+    footer {
+      padding: 12px 20px;
+      border-top: 1px solid #1e2430;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #0f1117;
+      flex-shrink: 0;
+    }
+
+    button {
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: background 0.15s, opacity 0.15s;
+    }
+
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    #compileBtn {
+      background: #7c3aed;
+      color: #fff;
+    }
+    #compileBtn:not(:disabled):hover { background: #6d28d9; }
+
+    #clearBtn {
+      background: #1e2430;
+      color: #94a3b8;
+    }
+    #clearBtn:not(:disabled):hover { background: #252e3f; }
+
+    #status {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-left: auto;
+    }
+    #status.ready  { color: #4ade80; }
+    #status.busy   { color: #fbbf24; }
+    #status.err    { color: #f87171; }
+
+    .dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      background: currentColor;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Viv Compiler</h1>
+  <span class="badge">WASM</span>
+</header>
+
+<main>
+  <div class="pane">
+    <div class="pane-header">
+      <span>Source (.viv)</span>
+    </div>
+    <textarea id="editor" spellcheck="false">// Hello, world!
+action hello:
+    gloss: "@greeter says hello to @friend"
+    roles:
+        @greeter:
+            as: initiator
+        @friend:
+            as: recipient
+    effects:
+        @greeter.mood += 10
+        @friend.mood += 10
+</textarea>
+  </div>
+
+  <div class="pane">
+    <div class="pane-header">
+      <span>Compiled output (JSON)</span>
+    </div>
+    <div id="output">Waiting for compiler to load…</div>
+  </div>
+</main>
+
+<footer>
+  <button id="compileBtn" disabled>Compile</button>
+  <button id="clearBtn">Clear output</button>
+  <span id="status"><span class="dot"></span>Loading Pyodide…</span>
+</footer>
+
+<!--
+  Pyodide is served locally from /wasm/node_modules/pyodide/ (npm install inside wasm/).
+  Run `npm run setup` inside the wasm/ directory before opening this page.
+-->
+<script src="/wasm/node_modules/pyodide/pyodide.js"></script>
+<script>
+  const editor     = document.getElementById("editor");
+  const output     = document.getElementById("output");
+  const compileBtn = document.getElementById("compileBtn");
+  const clearBtn   = document.getElementById("clearBtn");
+  const status     = document.getElementById("status");
+
+  function setStatus(text, cls) {
+    status.className = cls;
+    status.innerHTML = `<span class="dot"></span>${text}`;
+  }
+
+  let pyodide = null;
+
+  async function init() {
+    try {
+      setStatus("Loading Pyodide…", "busy");
+      // indexURL must match where pyodide.asm.wasm, python_stdlib.zip, etc. are served
+      pyodide = await loadPyodide({ indexURL: "/wasm/node_modules/pyodide/" });
+
+      setStatus("Installing micropip…", "busy");
+      await pyodide.loadPackage("micropip");
+      const micropip = pyodide.pyimport("micropip");
+
+      const base = window.location.origin;
+      setStatus("Installing arpeggio…", "busy");
+      await micropip.install(`${base}/wasm/Arpeggio-2.0.3-py2.py3-none-any.whl`);
+
+      setStatus("Installing viv-compiler…", "busy");
+      await micropip.install(`${base}/wasm/viv_compiler-0.12.2-py3-none-any.whl`);
+
+      // Import once so subsequent calls are fast.
+      await pyodide.runPythonAsync(`
+import json
+from viv_compiler import compile_from_string
+from viv_compiler.errors import VivParseError, VivCompileError
+      `);
+
+      setStatus("Ready", "ready");
+      output.textContent = "// Compiler loaded. Press Compile (or Ctrl+Enter) to run.";
+      output.className = "";
+      compileBtn.disabled = false;
+    } catch (err) {
+      setStatus("Failed to load", "err");
+      output.textContent = String(err);
+      output.className = "error";
+    }
+  }
+
+  async function compile() {
+    compileBtn.disabled = true;
+    setStatus("Compiling…", "busy");
+    output.className = "";
+    output.textContent = "…";
+
+    const src = editor.value;
+
+    try {
+      const result = await pyodide.runPythonAsync(`
+_src = ${JSON.stringify(src)}
+try:
+    _bundle = compile_from_string(_src)
+    _result = json.dumps(_bundle, indent=2)
+except (VivParseError, VivCompileError) as _e:
+    _result = "__ERROR__:" + str(_e)
+_result
+      `);
+
+      if (typeof result === "string" && result.startsWith("__ERROR__:")) {
+        output.textContent = result.slice("__ERROR__:".length).trim();
+        output.className = "error";
+        setStatus("Compile error", "err");
+      } else {
+        output.textContent = result;
+        output.className = "success";
+        setStatus("Success", "ready");
+      }
+    } catch (err) {
+      output.textContent = String(err);
+      output.className = "error";
+      setStatus("Runtime error", "err");
+    } finally {
+      compileBtn.disabled = false;
+    }
+  }
+
+  compileBtn.addEventListener("click", compile);
+  clearBtn.addEventListener("click", () => {
+    output.textContent = "";
+    output.className = "";
+  });
+
+  editor.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      if (!compileBtn.disabled) compile();
+    }
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const s = e.target.selectionStart;
+      e.target.value = e.target.value.slice(0, s) + "    " + e.target.value.slice(e.target.selectionEnd);
+      e.target.selectionStart = e.target.selectionEnd = s + 4;
+    }
+  });
+
+  init();
+</script>
+</body>
+</html>

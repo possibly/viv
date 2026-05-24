@@ -1,0 +1,13 @@
+{
+  "name": "viv-compiler-wasm-demo",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Browser demo that runs the Viv compiler via Pyodide (Python on WASM).",
+  "scripts": {
+    "setup": "npm install && node setup.js",
+    "serve": "cd .. && python3 -m http.server 8080"
+  },
+  "dependencies": {
+    "pyodide": "0.27.5"
+  }
+}
